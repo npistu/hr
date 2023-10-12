@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: smart
+---
+hr:
+  smart:
+    - limit: 10.0
+      percent: 10
+    - limit: 5.0
+      percent: 5
+    - limit: 2.5
+      percent: 2
