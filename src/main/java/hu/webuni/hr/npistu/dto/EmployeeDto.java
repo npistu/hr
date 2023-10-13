@@ -1,4 +1,4 @@
-package hu.webuni.hr.npistu.model;
+package hu.webuni.hr.npistu.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employee {
+public class EmployeeDto {
     private Long id;
     private String name;
     private String job;

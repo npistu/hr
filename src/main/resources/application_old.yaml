@@ -10,3 +10,7 @@ hr:
       percent: 5
     - limit: 2.5
       percent: 2
+---
+spring:
+  thymeleaf:
+    enabled: false
