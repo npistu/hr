@@ -9,17 +9,22 @@
 <h1>Welcome to the Employees Application</h1>
 
 <table>
-  <span th:each="employee: ${employees}">
-    <tr>
-      <td th:text="${employee.id}" th:width="30"></td>
-      <td th:text="${employee.name}" th:width="150"></td>
-      <td th:text="${employee.job}" th:width="150"></td>
-      <td th:width="120">
-        <span th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"></span> Ft
-      </td>
-      <td th:text="${#temporals.format(employee.started, 'yyyy-MM-dd HH:mm')}"></td>
-    </tr>
-  </span>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Job</th>
+    <th>Salary</th>
+    <th>Started</th>
+  </tr>
+  <tr th:each="employee: ${employees}">
+    <td th:text="${employee.id}" th:width="30"></td>
+    <td th:text="${employee.name}" th:width="150"></td>
+    <td th:text="${employee.job}" th:width="150"></td>
+    <td th:width="120">
+      <span th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"></span> Ft
+    </td>
+    <td th:text="${#temporals.format(employee.started, 'yyyy-MM-dd HH:mm')}"></td>
+  </tr>
 </table>
 <br/><br/><br/>
 <form th:object="${newEmployee}" method="post" th:action="@{/employee}">
@@ -27,6 +32,7 @@
   Name: <input th:field="*{name}"/> <br/>
   Job: <input th:field="*{job}"/> <br/>
   Salary: <input th:field="*{salary}" type="number"/> <br/>
+  Started: <input th:field="*{started}" placeholder="yyyy-MM-dd HH:mm:ss"/> <br/>
   <input type="submit" value="Create"/>
 </form>
 

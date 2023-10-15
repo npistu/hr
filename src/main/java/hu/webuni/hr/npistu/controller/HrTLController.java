@@ -32,7 +32,6 @@ public class HrTLController {
 
     @PostMapping("/employee")
     public String createEmployee(@Valid Employee employee) {
-        employee.setStarted(LocalDateTime.now());
         employees.add(employee);
 
         return "redirect:/";
