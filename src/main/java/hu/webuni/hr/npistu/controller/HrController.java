@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -25,21 +22,30 @@ public class HrController {
 
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> findAll(@RequestParam(required = false) Integer salary) {
-        if (salary == null) {
-            return ResponseEntity.ok(new ArrayList<>(employees.values()));
-        }
-        else {
-            List<EmployeeDto> result = new ArrayList<>();
+//    public ResponseEntity<List<EmployeeDto>> findAll(@RequestParam(required = false) Integer salary) {
+    public ResponseEntity<List<EmployeeDto>> findAll(Optional<Integer> salary) {
+        return salary.map(integer -> ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.getSalary() > integer).toList())).orElseGet(() -> ResponseEntity.ok(new ArrayList<>(employees.values())));
 
-            for (EmployeeDto value: employees.values()) {
-                if (value.getSalary() >= salary) {
-                    result.add(value);
-                }
-            }
 
-            return ResponseEntity.ok(result);
-        }
+//        if (salary == null) {
+//            return ResponseEntity.ok(new ArrayList<>(employees.values()));
+//        }
+//        else {
+//            List<EmployeeDto> result = new ArrayList<>();
+//
+//            for (EmployeeDto value: employees.values()) {
+//                if (value.getSalary() >= salary) {
+//                    result.add(value);
+//                }
+//            }
+//
+//            return ResponseEntity.ok(result);
+//        }
+    }
+
+    @GetMapping(params = "minSalary")
+    public ResponseEntity<List<EmployeeDto>> findBySalary(@RequestParam int minSalary) {
+        return ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.getSalary() > minSalary).toList());
     }
 
     @GetMapping("/{id}")
