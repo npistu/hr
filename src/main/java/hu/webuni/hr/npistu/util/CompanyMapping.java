@@ -1,4 +1,4 @@
-package hu.webuni.hr.npistu.mapping;
+package hu.webuni.hr.npistu.util;
 
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;

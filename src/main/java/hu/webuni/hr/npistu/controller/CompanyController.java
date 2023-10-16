@@ -1,12 +1,9 @@
 package hu.webuni.hr.npistu.controller;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import hu.webuni.hr.npistu.dto.CompanyDto;
 import hu.webuni.hr.npistu.dto.EmployeeDto;
-import hu.webuni.hr.npistu.mapping.CompanyMapping;
-import hu.webuni.hr.npistu.model.Employee;
+import hu.webuni.hr.npistu.util.CompanyMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
