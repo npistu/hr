@@ -15,15 +15,25 @@
     <th>Job</th>
     <th>Salary</th>
     <th>Started</th>
+    <th>Action</th>
   </tr>
   <tr th:each="employee: ${employees}">
     <td th:text="${employee.id}" th:width="30"></td>
-    <td th:text="${employee.name}" th:width="150"></td>
+    <td th:width="150">
+      <a th:href="@{/edit/{id}(id = ${employee.id})}">
+        <span th:text="${employee.name}"/>
+      </a>
+    </td>
     <td th:text="${employee.job}" th:width="150"></td>
     <td th:width="120">
       <span th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"></span> Ft
     </td>
-    <td th:text="${#temporals.format(employee.started, 'yyyy-MM-dd HH:mm')}"></td>
+    <td th:text="${#temporals.format(employee.started, 'yyyy-MM-dd HH:mm')}" th:width="200"></td>
+    <td>
+      <a th:href="@{/delete/{id}(id = ${employee.id})}">
+        Delete
+      </a>
+    </td>
   </tr>
 </table>
 <br/><br/><br/>
