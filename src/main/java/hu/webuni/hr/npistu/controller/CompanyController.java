@@ -1,9 +1,10 @@
 package hu.webuni.hr.npistu.controller;
 
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import hu.webuni.hr.npistu.dto.CompanyDto;
 import hu.webuni.hr.npistu.dto.EmployeeDto;
-import hu.webuni.hr.npistu.util.CompanyMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
@@ -33,42 +34,42 @@ public class CompanyController {
 
 
     @GetMapping
-    public ResponseEntity<MappingJacksonValue> getAll(Optional<Boolean> full) {
-        List<CompanyDto> companyList = new ArrayList<>(companies.values());
+    public MappingJacksonValue getAll(@RequestParam Optional<Boolean> full) {
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(companies.values());
 
-        SimpleBeanPropertyFilter simpleBeanPropertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("employees");
+        if (full.isEmpty() || !full.get()) {
+            FilterProvider filterProvider = new SimpleFilterProvider().addFilter("companyDto", SimpleBeanPropertyFilter.serializeAllExcept("employees"));
 
-        if (full.isPresent() && full.get()) {
-            simpleBeanPropertyFilter = SimpleBeanPropertyFilter.serializeAllExcept();
+            mappingJacksonValue.setFilters(filterProvider);
         }
 
-        return ResponseEntity.ok(CompanyMapping.companyListMappingJackson(Optional.of(simpleBeanPropertyFilter), companyList));
+        return mappingJacksonValue;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MappingJacksonValue> getById(@PathVariable long id) {
+    public ResponseEntity<CompanyDto> getById(@PathVariable long id) {
         CompanyDto companyDto = companies.get(id);
 
         if (companyDto == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(CompanyMapping.companyMappingJackson(Optional.empty(), companyDto));
+            return ResponseEntity.ok(companyDto);
         }
     }
 
     @PostMapping
-    public ResponseEntity<MappingJacksonValue> create(@RequestBody CompanyDto company) {
+    public ResponseEntity<CompanyDto> create(@RequestBody CompanyDto company) {
         if (companies.containsKey(company.getId())) {
             return ResponseEntity.badRequest().build();
         }
 
         companies.put(company.getId(), company);
 
-        return ResponseEntity.ok(CompanyMapping.companyMappingJackson(Optional.empty(), company));
+        return ResponseEntity.ok(company);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MappingJacksonValue> update(@PathVariable long id, @RequestBody CompanyDto company) {
+    public ResponseEntity<CompanyDto> update(@PathVariable long id, @RequestBody CompanyDto company) {
         if (!companies.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -76,11 +77,11 @@ public class CompanyController {
         company.setId(id);
         companies.put(id, company);
 
-        return ResponseEntity.ok(CompanyMapping.companyMappingJackson(Optional.empty(), company));
+        return ResponseEntity.ok(company);
     }
 
     @PutMapping("/{id}/addemployee")
-    public ResponseEntity<MappingJacksonValue> addEmployee(@PathVariable long id, @RequestBody EmployeeDto employee) {
+    public ResponseEntity<CompanyDto> addEmployee(@PathVariable long id, @RequestBody EmployeeDto employee) {
         if (!companies.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -92,11 +93,11 @@ public class CompanyController {
             companyDto.setEmployees(employeeDtos);
         }
 
-        return ResponseEntity.ok(CompanyMapping.companyMappingJackson(Optional.empty(), companyDto));
+        return ResponseEntity.ok(companyDto);
     }
 
     @PutMapping("/{id}/replaceemployees")
-    public ResponseEntity<MappingJacksonValue> replaceEmployees(@PathVariable long id, @RequestBody Map<Long, EmployeeDto> employees) {
+    public ResponseEntity<CompanyDto> replaceEmployees(@PathVariable long id, @RequestBody Map<Long, EmployeeDto> employees) {
         if (!companies.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -104,7 +105,7 @@ public class CompanyController {
         CompanyDto companyDto = companies.get(id);
         companyDto.setEmployees(employees);
 
-        return ResponseEntity.ok(CompanyMapping.companyMappingJackson(Optional.empty(), companyDto));
+        return ResponseEntity.ok(companyDto);
     }
 
     @DeleteMapping("/{id}")
@@ -113,7 +114,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{id}/deleteemployee/{employeeId}")
-    public ResponseEntity<MappingJacksonValue> deleteEmployee(@PathVariable long id, @PathVariable long employeeId ) {
+    public ResponseEntity<CompanyDto> deleteEmployee(@PathVariable long id, @PathVariable long employeeId ) {
         if (!companies.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -125,6 +126,6 @@ public class CompanyController {
             companyDto.setEmployees(employeeDtos);
         }
 
-        return ResponseEntity.ok(CompanyMapping.companyMappingJackson(Optional.empty(), companyDto));
+        return ResponseEntity.ok(companyDto);
     }
 }
