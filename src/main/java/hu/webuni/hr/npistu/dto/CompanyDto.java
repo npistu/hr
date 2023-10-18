@@ -13,7 +13,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonFilter("companyFilter")
+@JsonFilter("companyDto")
 public class CompanyDto {
     private Long id;
     private String registrationNumber;
