@@ -21,6 +21,7 @@ public class HrTLController {
     {
         employees.put(5L, new Employee(5L, "Juli", "Takarító nő", 1000, LocalDateTime.parse("2021-01-04 12:00", formatter)));
         employees.put(6L, new Employee(6L, "Jocó", "Takarító", 2000, LocalDateTime.parse("2021-08-04 12:00", formatter)));
+//        employees.put(7L, new Employee(7L, "Jenci", "Takarító", 3000, LocalDateTime.of(2021, 8, 4, 12, 12, 12)));
     }
 
     @GetMapping("/")

@@ -20,9 +20,7 @@
   <tr th:each="employee: ${employees}">
     <td th:text="${employee.id}" th:width="30"></td>
     <td th:width="150">
-      <a th:href="@{/edit/{id}(id = ${employee.id})}">
-        <span th:text="${employee.name}"/>
-      </a>
+      <a th:href="@{/edit/{id}(id = ${employee.id})}" th:text="${employee.name}"></a>
     </td>
     <td th:text="${employee.job}" th:width="150"></td>
     <td th:width="120">
