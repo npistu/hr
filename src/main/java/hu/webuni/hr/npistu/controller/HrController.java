@@ -24,12 +24,12 @@ public class HrController {
 
     @GetMapping
     public ResponseEntity<List<EmployeeDto>> findAll(Optional<Integer> salary) {
-        return salary.map(integer -> ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.getSalary() > integer).toList())).orElseGet(() -> ResponseEntity.ok(new ArrayList<>(employees.values())));
+        return salary.map(integer -> ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.salary() > integer).toList())).orElseGet(() -> ResponseEntity.ok(new ArrayList<>(employees.values())));
     }
 
     @GetMapping(params = "minSalary")
     public ResponseEntity<List<EmployeeDto>> findBySalary(@RequestParam int minSalary) {
-        return ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.getSalary() > minSalary).toList());
+        return ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.salary() > minSalary).toList());
     }
 
     @GetMapping("/{id}")
@@ -45,11 +45,11 @@ public class HrController {
 
     @PostMapping
     public ResponseEntity<EmployeeDto> create(@RequestBody @Valid EmployeeDto employee) {
-        if (employees.containsKey(employee.getId())) {
+        if (employees.containsKey(employee.id())) {
             return ResponseEntity.badRequest().build();
         }
 
-        employees.put(employee.getId(), employee);
+        employees.put(employee.id(), employee);
 
         return ResponseEntity.ok(employee);
     }
@@ -60,7 +60,7 @@ public class HrController {
             return ResponseEntity.notFound().build();
         }
 
-        employee.setId(id);
+        employee = employee.withId(id);
         employees.put(id, employee);
 
         return ResponseEntity.ok(employee);

@@ -68,7 +68,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     public EmployeeDto update(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
-        employeeDto.setId(id);
+        employeeDto = employeeDto.withId(id);
 
         Employee employee = employeeMapper.dtoToEmployee(employeeDto);
         Employee updateEmployee = employeeService.update(employee);

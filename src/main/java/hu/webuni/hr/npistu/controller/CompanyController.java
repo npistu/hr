@@ -69,7 +69,7 @@ public class CompanyController {
 
     @PutMapping("/{id}")
     public CompanyDto update(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-        companyDto.setId(id);
+        companyDto = companyDto.withId(id);
 
         Company company = companyMapper.dtoToCompany(companyDto);
         Company updateCompany = companyService.update(company);
