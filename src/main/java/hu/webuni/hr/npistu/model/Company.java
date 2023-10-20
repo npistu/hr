@@ -1,32 +1,22 @@
-package hu.webuni.hr.npistu.dto;
+package hu.webuni.hr.npistu.model;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
+import hu.webuni.hr.npistu.dto.EmployeeDto;
+import hu.webuni.hr.npistu.dto.Views;
 
-import java.util.List;
 import java.util.Map;
 
-public class CompanyDto {
-    @JsonView(Views.BaseData.class)
-    @Positive
+public class Company {
     private Long id;
-    @JsonView(Views.BaseData.class)
-    @NotEmpty
     private String registrationNumber;
-    @JsonView(Views.BaseData.class)
-    @NotEmpty
     private String name;
-    @JsonView(Views.BaseData.class)
     private String address;
+    private Map<Long, Employee> employees;
 
-    private Map<Long, EmployeeDto> employees;
-
-    public CompanyDto() {
+    public Company() {
     }
 
-    public CompanyDto(Long id, String registrationNumber, String name, String address, Map<Long, EmployeeDto> employees) {
+    public Company(Long id, String registrationNumber, String name, String address, Map<Long, Employee> employees) {
         this.id = id;
         this.registrationNumber = registrationNumber;
         this.name = name;
@@ -66,11 +56,11 @@ public class CompanyDto {
         this.address = address;
     }
 
-    public Map<Long, EmployeeDto> getEmployees() {
+    public Map<Long, Employee> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(Map<Long, EmployeeDto> employees) {
+    public void setEmployees(Map<Long, Employee> employees) {
         this.employees = employees;
     }
 }

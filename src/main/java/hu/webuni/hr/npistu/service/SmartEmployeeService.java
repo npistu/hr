@@ -14,7 +14,7 @@ import java.time.Period;
 import java.util.List;
 
 @Service
-public class SmartEmployeeService implements EmployeeService{
+public class SmartEmployeeService extends EmployeeAbstractService {
 
     @Autowired
     private HrConfigurationProperties properties;

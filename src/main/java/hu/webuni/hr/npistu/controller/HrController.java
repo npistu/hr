@@ -1,6 +1,7 @@
 package hu.webuni.hr.npistu.controller;
 
 import hu.webuni.hr.npistu.dto.EmployeeDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/api/employee")
 public class HrController {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -22,25 +23,8 @@ public class HrController {
 
 
     @GetMapping
-//    public ResponseEntity<List<EmployeeDto>> findAll(@RequestParam(required = false) Integer salary) {
     public ResponseEntity<List<EmployeeDto>> findAll(Optional<Integer> salary) {
         return salary.map(integer -> ResponseEntity.ok(employees.values().stream().filter(employeeDto -> employeeDto.getSalary() > integer).toList())).orElseGet(() -> ResponseEntity.ok(new ArrayList<>(employees.values())));
-
-
-//        if (salary == null) {
-//            return ResponseEntity.ok(new ArrayList<>(employees.values()));
-//        }
-//        else {
-//            List<EmployeeDto> result = new ArrayList<>();
-//
-//            for (EmployeeDto value: employees.values()) {
-//                if (value.getSalary() >= salary) {
-//                    result.add(value);
-//                }
-//            }
-//
-//            return ResponseEntity.ok(result);
-//        }
     }
 
     @GetMapping(params = "minSalary")
@@ -60,7 +44,7 @@ public class HrController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> create(@RequestBody EmployeeDto employee) {
+    public ResponseEntity<EmployeeDto> create(@RequestBody @Valid EmployeeDto employee) {
         if (employees.containsKey(employee.getId())) {
             return ResponseEntity.badRequest().build();
         }
@@ -71,7 +55,7 @@ public class HrController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> update(@PathVariable long id, @RequestBody EmployeeDto employee) {
+    public ResponseEntity<EmployeeDto> update(@PathVariable long id, @RequestBody @Valid EmployeeDto employee) {
         if (!employees.containsKey(id)) {
             return ResponseEntity.notFound().build();
         }

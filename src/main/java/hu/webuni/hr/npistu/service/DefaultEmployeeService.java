@@ -4,7 +4,7 @@ import hu.webuni.hr.npistu.model.Employee;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultEmployeeService implements EmployeeService{
+public class DefaultEmployeeService extends EmployeeAbstractService {
     @Override
     public int getPayRaisePercent(Employee employee) {
         return 5;
