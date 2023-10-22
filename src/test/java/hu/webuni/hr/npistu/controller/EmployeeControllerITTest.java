@@ -34,6 +34,20 @@ public class EmployeeControllerITTest {
         testCreateEmployee(newEmployee);
     }
 
+    @Test
+    void testValidUpdate() {
+        EmployeeDto updatedEmployee = new EmployeeDto(100L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
+
+        testUpdateEmployee(updatedEmployee);
+    }
+
+    @Test
+    void testInvalidUpdate() {
+        EmployeeDto updatedEmployee = new EmployeeDto(101L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
+
+        testUpdateEmployee(updatedEmployee);
+    }
+
     private void testCreateEmployee(EmployeeDto newEmployee) {
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
@@ -47,12 +61,32 @@ public class EmployeeControllerITTest {
                 .isEqualTo(newEmployee);
     }
 
+    private void testUpdateEmployee(EmployeeDto updateEmployee) {
+
+        EmployeeDto employee1 = new EmployeeDto(100L, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto employee2 = new EmployeeDto(101L, "János", "Vezető", 400000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+
+        createEmployee(employee1);
+        createEmployee(employee2);
+
+        List<EmployeeDto> employeesBefore = getAllEmployees();
+
+        updateEmployee(updateEmployee);
+
+        List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertThat(employeesAfter.get(0)).usingRecursiveComparison()
+                .isNotEqualTo(employee1);
+        assertThat(employeesAfter).usingRecursiveFieldByFieldElementComparator()
+                .isNotEqualTo(employeesBefore);
+    }
+
     private void createEmployee(EmployeeDto newEmployee) {
         webTestClient.post().uri(API_EMPLOYEES).bodyValue(newEmployee).exchange().expectStatus().isOk();
     }
 
     private void updateEmployee(EmployeeDto updatedEmployee) {
-        webTestClient.put().uri(API_EMPLOYEES).attribute("id", updatedEmployee.id()).bodyValue(updatedEmployee).exchange().expectStatus().isOk();
+        webTestClient.put().uri(API_EMPLOYEES+"/{id}", updatedEmployee.id()).bodyValue(updatedEmployee).exchange().expectStatus().isOk();
     }
 
     private List<EmployeeDto> getAllEmployees() {
