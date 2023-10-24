@@ -24,28 +24,37 @@ public class EmployeeControllerITTest {
     void testValidCreated() {
         EmployeeDto newEmployee = new EmployeeDto(100L, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
 
-        testCreateEmployee(newEmployee);
+        List<EmployeeDto> employeesBefore = getAllEmployees();
+
+        createEmployee(newEmployee);
+
+        List<EmployeeDto> employeesAfter = getAllEmployees();
+
+        assertThat(employeesAfter.subList(0, employeesBefore.size())).usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyElementsOf(employeesBefore);
+        assertThat(employeesAfter.get(employeesAfter.size() - 1)).usingRecursiveComparison()
+                .isEqualTo(newEmployee);
     }
 
     @Test
     void testInvalidCreated() {
-        EmployeeDto newEmployee = new EmployeeDto(-100L, "", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto newEmployee = new EmployeeDto(-101L, "", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
 
-        testCreateEmployee(newEmployee);
+        webTestClient.post().uri(API_EMPLOYEES).bodyValue(newEmployee).exchange().expectStatus().isBadRequest();
     }
 
     @Test
     void testValidUpdate() {
-        EmployeeDto updatedEmployee = new EmployeeDto(100L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
+        EmployeeDto updatedEmployee = new EmployeeDto(103L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
 
         testUpdateEmployee(updatedEmployee);
     }
 
     @Test
     void testInvalidUpdate() {
-        EmployeeDto updatedEmployee = new EmployeeDto(101L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
+        EmployeeDto updatedEmployee = new EmployeeDto(106L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
 
-        testUpdateEmployee(updatedEmployee);
+        webTestClient.put().uri(API_EMPLOYEES+"/{id}", updatedEmployee.id()).bodyValue(updatedEmployee).exchange().expectStatus().isNotFound();
     }
 
     private void testCreateEmployee(EmployeeDto newEmployee) {
@@ -63,8 +72,8 @@ public class EmployeeControllerITTest {
 
     private void testUpdateEmployee(EmployeeDto updateEmployee) {
 
-        EmployeeDto employee1 = new EmployeeDto(100L, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
-        EmployeeDto employee2 = new EmployeeDto(101L, "János", "Vezető", 400000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto employee1 = new EmployeeDto(103L, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto employee2 = new EmployeeDto(104L, "János", "Vezető", 400000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
 
         createEmployee(employee1);
         createEmployee(employee2);
