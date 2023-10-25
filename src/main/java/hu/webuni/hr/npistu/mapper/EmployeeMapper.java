@@ -13,4 +13,6 @@ public interface EmployeeMapper {
     List<EmployeeDto> employeesToDtos(List<Employee> employees);
 
     Employee dtoToEmployee(EmployeeDto employeeDto);
+
+    List<Employee> dtosToEmployees(List<EmployeeDto> employeeDtos);
 }

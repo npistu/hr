@@ -1,19 +1,18 @@
 package hu.webuni.hr.npistu.service;
 
-import hu.webuni.hr.npistu.exception.NonUniqueIdException;
 import hu.webuni.hr.npistu.model.Employee;
+import hu.webuni.hr.npistu.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public abstract class EmployeeAbstractService implements EmployeeService {
 
-    private Map<Long, Employee> employees = new HashMap<>();
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     public Employee create(Employee employee) {
-        throwIfNonUniqueId(employee);
         return save(employee);
     }
 
@@ -26,26 +25,30 @@ public abstract class EmployeeAbstractService implements EmployeeService {
     }
 
     public List<Employee> findAll() {
-        return new ArrayList<>(employees.values());
+        return employeeRepository.findAll();
     }
 
     public Employee findById(long id) {
-        return employees.get(id);
+        return employeeRepository.findById(id).orElse(null);
     }
 
     public void delete(long id) {
-        employees.remove(id);
+        employeeRepository.deleteById(id);
+    }
+
+    public List<Employee> findByJob(String job) {
+        return employeeRepository.findByJob(job);
+    }
+
+    public List<Employee> findByNameStartingWithIgnoreCase(String name) {
+        return employeeRepository.findByNameStartingWithIgnoreCase(name);
+    }
+
+    public List<Employee> findByStartedBetween(LocalDateTime started, LocalDateTime end) {
+        return employeeRepository.findByStartedBetween(started, end);
     }
 
     private Employee save(Employee employee) {
-        employees.put(employee.getId(), employee);
-
-        return employee;
-    }
-
-    private void throwIfNonUniqueId(Employee employee) {
-        if (employees.values().stream().anyMatch(a -> a.getId().equals(employee.getId()))) {
-            throw new NonUniqueIdException();
-        }
+        return employeeRepository.save(employee);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 public record CompanyDto(@JsonView(Views.BaseData.class) @Positive Long id,
                          @JsonView(Views.BaseData.class) @NotEmpty String registrationNumber,
                          @JsonView(Views.BaseData.class) @NotEmpty String name,
-                         @JsonView(Views.BaseData.class) String address, Map<Long, EmployeeDto> employees) {
+                         @JsonView(Views.BaseData.class) String address, List<EmployeeDto> employees) {
     public CompanyDto() {
         this(1L, null, null, null, null);
     }

@@ -1,18 +1,26 @@
 package hu.webuni.hr.npistu.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Company {
+    @Id
+    @GeneratedValue
     private Long id;
     private String registrationNumber;
     private String name;
     private String address;
-    private Map<Long, Employee> employees;
+    @OneToMany
+    private List<Employee> employees;
 }

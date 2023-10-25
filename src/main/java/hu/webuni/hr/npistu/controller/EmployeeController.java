@@ -6,6 +6,7 @@ import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,4 +85,21 @@ public class EmployeeController {
     public void delete(@PathVariable long id) {
         employeeService.delete(id);
     }
+
+    @GetMapping("/job/{job}")
+    public List<Employee> findByJob(@PathVariable String job) {
+        return employeeService.findByJob(job);
+    }
+
+    @GetMapping("/name/{name}")
+    public List<Employee> findByNameStartingWithIgnoreCase(@PathVariable String name) {
+        return employeeService.findByNameStartingWithIgnoreCase(name);
+    }
+
+    @GetMapping("/start/{started}/{end}")
+    public List<Employee> findByStartedBetween(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime started,
+                                               @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+        return employeeService.findByStartedBetween(started, end);
+    }
+
 }

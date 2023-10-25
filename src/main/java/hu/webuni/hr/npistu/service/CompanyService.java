@@ -5,23 +5,27 @@ import hu.webuni.hr.npistu.dto.EmployeeDto;
 import hu.webuni.hr.npistu.exception.NonUniqueIdException;
 import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
+import hu.webuni.hr.npistu.repository.CompanyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CompanyService {
 
-    private Map<Long, Company> companies = new HashMap<>();
+    @Autowired
+    CompanyRepository companyRepository;
+
+    @Autowired
+    EmployeeService employeeService;
 
     public Company create(Company company) {
-        throwIfNonUniqueId(company);
         return save(company);
     }
 
@@ -34,54 +38,87 @@ public class CompanyService {
     }
 
     public List<Company> findAll() {
-        return new ArrayList<>(companies.values());
+        return companyRepository.findAll();
     }
 
     public Company findById(long id) {
-        return companies.get(id);
+        return companyRepository.findById(id).orElse(null);
     }
 
     public void delete(long id) {
-        companies.remove(id);
+        companyRepository.deleteById(id);
     }
 
-    public Company addEmployee(Company company, Employee employee) {
-        Map<Long, Employee> employees = company.getEmployees();
+    public Company addEmployee(long companyId, Employee employee) {
+        Company company = getCompanyIfExists(companyId);
 
-        if (!employees.containsKey(employee.getId())) {
-            employees.put(employee.getId(), employee);
-            company.setEmployees(employees);
-        }
+        Employee storedEmployee = getStoredEmployee(employee);
 
-        return company;
-    }
+        List<Employee> employees = company.getEmployees();
+        employees.add(employeeService.create(storedEmployee));
 
-    public Company replaceEmployees(Company company, Map<Long, Employee> employees) {
         company.setEmployees(employees);
 
-        return company;
+        return save(company);
     }
 
-    public Company deleteEmployee(Company company, long employeeId ) {
-        Map<Long, Employee> employees = company.getEmployees();
+    public Company replaceEmployees(long companyId, List<Employee> employees) {
+        Company company = getCompanyIfExists(companyId);
 
-        if (employees.containsKey(employeeId)) {
-            employees.remove(employeeId);
+        List<Employee> storedEmployees = new ArrayList<>();
+
+        for (Employee employee: employees) {
+            storedEmployees.add(getStoredEmployee(employee));
+        }
+
+        company.setEmployees(storedEmployees);
+
+        return save(company);
+    }
+
+    public Company deleteEmployee(long companyId, long employeeId ) {
+        Company company = getCompanyIfExists(companyId);
+
+        Optional<Employee> optional = company.getEmployees().stream().filter(employee -> employee.getId() == employeeId).findFirst();
+
+        if (optional.isPresent()) {
+            List<Employee> employees = company.getEmployees();
+
+            employees.remove(optional.get());
+
             company.setEmployees(employees);
+
+            save(company);
         }
 
         return company;
     }
 
     private Company save(Company company) {
-        companies.put(company.getId(), company);
+        return companyRepository.save(company);
+    }
 
+    private Company getCompanyIfExists(long companyId) {
+        Company company = findById(companyId);
+
+        if (company == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return company;
     }
 
-    private void throwIfNonUniqueId(Company company) {
-        if (companies.values().stream().anyMatch(a -> a.getId().equals(company.getId()))) {
-            throw new NonUniqueIdException();
+    private Employee getStoredEmployee(Employee employee) {
+        Employee storedEmployee = null;
+
+        if (employee.getId() != null) {
+            storedEmployee = employeeService.findById(employee.getId());
         }
+
+        if (storedEmployee == null) {
+            storedEmployee = employeeService.create(employee);
+        }
+
+        return storedEmployee;
     }
+
 }

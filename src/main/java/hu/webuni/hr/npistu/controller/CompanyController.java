@@ -91,40 +91,18 @@ public class CompanyController {
         companyService.delete(id);
     }
 
-
     @PutMapping("/{id}/addemployee")
     public CompanyDto addEmployee(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
-        Company company = companyService.findById(id);
-
-        if (company == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return companyMapper.companyToDto(companyService.addEmployee(company, employeeMapper.dtoToEmployee(employeeDto)));
+        return companyMapper.companyToDto(companyService.addEmployee(id, employeeMapper.dtoToEmployee(employeeDto)));
     }
 
     @PutMapping("/{id}/replaceemployees")
-    public CompanyDto replaceEmployees(@PathVariable long id, @RequestBody Map<Long, EmployeeDto> employeeDtos) {
-        Company company = companyService.findById(id);
-
-        if (company == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        Map<Long, Employee> employees = new HashMap<>();
-        employeeDtos.forEach((key, value) -> employees.put(key, employeeMapper.dtoToEmployee(value)));
-
-        return companyMapper.companyToDto(companyService.replaceEmployees(company, employees));
+    public CompanyDto replaceEmployees(@PathVariable long id, @RequestBody List<EmployeeDto> employeeDtos) {
+        return companyMapper.companyToDto(companyService.replaceEmployees(id, employeeMapper.dtosToEmployees(employeeDtos)));
     }
 
     @DeleteMapping("/{id}/deleteemployee/{employeeId}")
     public CompanyDto deleteEmployee(@PathVariable long id, @PathVariable long employeeId ) {
-        Company company = companyService.findById(id);
-
-        if (company == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return companyMapper.companyToDto(companyService.deleteEmployee(company, employeeId));
+        return companyMapper.companyToDto(companyService.deleteEmployee(id, employeeId));
     }
 }
