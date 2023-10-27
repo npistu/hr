@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: smart
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost/hr
+    username=: cubix
+    password: cubix
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+---
+hr:
+  smart:
+    - limit: 10.0
+      percent: 10
+    - limit: 5.0
+      percent: 5
+    - limit: 2.5
+      percent: 2
+---
+server:
+  error:
+    include-message: always
