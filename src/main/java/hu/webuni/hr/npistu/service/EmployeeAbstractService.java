@@ -3,6 +3,7 @@ package hu.webuni.hr.npistu.service;
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,10 +13,12 @@ public abstract class EmployeeAbstractService implements EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Transactional
     public Employee create(Employee employee) {
         return save(employee);
     }
 
+    @Transactional
     public Employee update(Employee employee) {
         if (findById(employee.getId()) == null) {
             return null;
@@ -32,6 +35,7 @@ public abstract class EmployeeAbstractService implements EmployeeService {
         return employeeRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void delete(long id) {
         employeeRepository.deleteById(id);
     }
