@@ -20,4 +20,7 @@ public class Employee {
     private String job;
     private Integer salary;
     private LocalDateTime started;
+    @ManyToOne
+    @ToString.Exclude
+    private Company company;
 }

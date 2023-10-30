@@ -18,6 +18,6 @@ public class Company {
     private String registrationNumber;
     private String name;
     private String address;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private List<Employee> employees;
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,26 +50,24 @@ public class CompanyService {
         companyRepository.deleteById(id);
     }
 
+    @Transactional
     public Company addEmployee(long companyId, Employee employee) {
         Company company = getCompanyIfExists(companyId);
 
-        Employee storedEmployee = getStoredEmployee(employee);
+        Employee storedEmployee = getStoredEmployee(employee, company);
 
-        List<Employee> employees = company.getEmployees();
-        employees.add(employeeService.create(storedEmployee));
-
-        company.setEmployees(employees);
-
-        return save(company);
+        return company;
     }
 
+//TODO Még a törlés nem stimmel
+    @Transactional
     public Company replaceEmployees(long companyId, List<Employee> employees) {
         Company company = getCompanyIfExists(companyId);
 
         List<Employee> storedEmployees = new ArrayList<>();
 
         for (Employee employee: employees) {
-            storedEmployees.add(getStoredEmployee(employee));
+            storedEmployees.add(getStoredEmployee(employee, company));
         }
 
         company.setEmployees(storedEmployees);
@@ -76,6 +75,8 @@ public class CompanyService {
         return save(company);
     }
 
+//TODO ez még nincs kész
+    @Transactional
     public Company deleteEmployee(long companyId, long employeeId ) {
         Company company = getCompanyIfExists(companyId);
 
@@ -107,7 +108,7 @@ public class CompanyService {
         return company;
     }
 
-    private Employee getStoredEmployee(Employee employee) {
+    private Employee getStoredEmployee(Employee employee, Company company) {
         Employee storedEmployee = null;
 
         if (employee.getId() != null) {
@@ -115,6 +116,7 @@ public class CompanyService {
         }
 
         if (storedEmployee == null) {
+            employee.setCompany(company);
             storedEmployee = employeeService.create(employee);
         }
 
