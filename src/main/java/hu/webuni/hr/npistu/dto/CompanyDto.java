@@ -1,11 +1,9 @@
 package hu.webuni.hr.npistu.dto;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
-import java.util.List;
 import java.util.Map;
 
 public record CompanyDto(@JsonView(Views.BaseData.class) @Positive Long id,

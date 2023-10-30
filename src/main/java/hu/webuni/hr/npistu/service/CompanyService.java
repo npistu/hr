@@ -48,6 +48,10 @@ public class CompanyService {
     public Company addEmployee(Company company, Employee employee) {
         Map<Long, Employee> employees = company.getEmployees();
 
+        if (employees == null) {
+            employees = new HashMap<>();
+        }
+
         if (!employees.containsKey(employee.getId())) {
             employees.put(employee.getId(), employee);
             company.setEmployees(employees);
@@ -64,6 +68,10 @@ public class CompanyService {
 
     public Company deleteEmployee(Company company, long employeeId ) {
         Map<Long, Employee> employees = company.getEmployees();
+
+        if (employees == null) {
+            employees = new HashMap<>();
+        }
 
         if (employees.containsKey(employeeId)) {
             employees.remove(employeeId);
