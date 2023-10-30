@@ -1,21 +1,16 @@
 package hu.webuni.hr.npistu.service;
 
-import hu.webuni.hr.npistu.dto.CompanyDto;
-import hu.webuni.hr.npistu.dto.EmployeeDto;
-import hu.webuni.hr.npistu.exception.NonUniqueIdException;
 import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CompanyService {
@@ -26,10 +21,12 @@ public class CompanyService {
     @Autowired
     EmployeeService employeeService;
 
+    @Transactional
     public Company create(Company company) {
         return save(company);
     }
 
+    @Transactional
     public Company update(Company company) {
         if (findById(company.getId()) == null) {
             return null;
@@ -46,6 +43,7 @@ public class CompanyService {
         return companyRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void delete(long id) {
         companyRepository.deleteById(id);
     }
@@ -54,43 +52,42 @@ public class CompanyService {
     public Company addEmployee(long companyId, Employee employee) {
         Company company = getCompanyIfExists(companyId);
 
-        Employee storedEmployee = getStoredEmployee(employee, company);
+        getStoredEmployee(employee, company);
 
         return company;
     }
 
-//TODO Még a törlés nem stimmel
     @Transactional
     public Company replaceEmployees(long companyId, List<Employee> employees) {
         Company company = getCompanyIfExists(companyId);
 
-        List<Employee> storedEmployees = new ArrayList<>();
+        List<Employee> actualEmployees = company.getEmployees();
 
-        for (Employee employee: employees) {
-            storedEmployees.add(getStoredEmployee(employee, company));
+        if (actualEmployees != null) {
+            for (Employee employee: actualEmployees) {
+                employee.setCompany(null);
+                employeeService.update(employee);
+            }
         }
 
-        company.setEmployees(storedEmployees);
+        List<Employee> storeEmployees = new ArrayList<>();
+
+        if (employees != null) {
+            for (Employee employee: employees) {
+                storeEmployees.add(getStoredEmployee(employee, company));
+            }
+        }
+
+        company.setEmployees(storeEmployees);
 
         return save(company);
     }
 
-//TODO ez még nincs kész
     @Transactional
     public Company deleteEmployee(long companyId, long employeeId ) {
         Company company = getCompanyIfExists(companyId);
 
-        Optional<Employee> optional = company.getEmployees().stream().filter(employee -> employee.getId() == employeeId).findFirst();
-
-        if (optional.isPresent()) {
-            List<Employee> employees = company.getEmployees();
-
-            employees.remove(optional.get());
-
-            company.setEmployees(employees);
-
-            save(company);
-        }
+        employeeService.delete(employeeId);
 
         return company;
     }
