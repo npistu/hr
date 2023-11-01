@@ -23,4 +23,12 @@ public class Employee {
     @ManyToOne
     @ToString.Exclude
     private Company company;
+
+    public Employee(String name, String job, Integer salary, LocalDateTime started, Company company) {
+        this.name = name;
+        this.job = job;
+        this.salary = salary;
+        this.started = started;
+        this.company = company;
+    }
 }

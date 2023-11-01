@@ -92,6 +92,18 @@ public class CompanyService {
         return company;
     }
 
+    public List<Company> getByEmployeesSalaryIsGreaterThan(Integer salary) {
+        return companyRepository.findByEmployees_SalaryIsGreaterThan(salary);
+    }
+
+    public List<Company> getByEmployeesSizeIsGreaterThan(Integer size) {
+        List<Company> companies = companyRepository.findAll();
+
+        companies.removeIf(company -> company.getEmployees().size() <= size);
+
+        return companies;
+    }
+
     private Company save(Company company) {
         return companyRepository.save(company);
     }

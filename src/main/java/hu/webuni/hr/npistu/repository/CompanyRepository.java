@@ -8,4 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+
+    List<Company> findByEmployees_SalaryIsGreaterThan(Integer salary);
 }

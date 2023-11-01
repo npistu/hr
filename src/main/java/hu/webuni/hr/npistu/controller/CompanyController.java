@@ -105,4 +105,14 @@ public class CompanyController {
     public CompanyDto deleteEmployee(@PathVariable long id, @PathVariable long employeeId ) {
         return companyMapper.companyToDto(companyService.deleteEmployee(id, employeeId));
     }
+
+    @GetMapping("/salary/{salary}")
+    public List<CompanyDto> getByEmployeesSalaryIsGreaterThan(@PathVariable int salary) {
+        return companyMapper.companiesToDtos(companyService.getByEmployeesSalaryIsGreaterThan(salary));
+    }
+
+    @GetMapping("/employeessize/{size}")
+    public List<CompanyDto> getByEmployeesSizeIsGreaterThan(@PathVariable int size) {
+        return companyMapper.companiesToDtos(companyService.getByEmployeesSizeIsGreaterThan(size));
+    }
 }
