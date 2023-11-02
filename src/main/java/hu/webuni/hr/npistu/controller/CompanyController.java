@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import hu.webuni.hr.npistu.dto.AvgSalaryDto;
 import hu.webuni.hr.npistu.dto.CompanyDto;
 import hu.webuni.hr.npistu.dto.EmployeeDto;
 import hu.webuni.hr.npistu.dto.Views;
@@ -114,5 +115,10 @@ public class CompanyController {
     @GetMapping("/employeessize/{size}")
     public List<CompanyDto> getByEmployeesSizeIsGreaterThan(@PathVariable int size) {
         return companyMapper.companiesToDtos(companyService.getByEmployeesSizeIsGreaterThan(size));
+    }
+
+    @GetMapping("/{id}/avgsalary")
+    public List<AvgSalaryDto> getJobAndAvgSalaryByCompanyId(@PathVariable long id) {
+        return companyMapper.avgSalariesToDtos(companyService.getJobAndAvgSalaryByCompanyId(id));
     }
 }

@@ -3,6 +3,7 @@ package hu.webuni.hr.npistu.service;
 import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.repository.CompanyRepository;
+import hu.webuni.hr.npistu.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class CompanyService {
 
     @Autowired
     EmployeeService employeeService;
+
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     @Transactional
     public Company create(Company company) {
@@ -102,6 +106,10 @@ public class CompanyService {
         companies.removeIf(company -> company.getEmployees().size() <= size);
 
         return companies;
+    }
+
+    public List<Object[]> getJobAndAvgSalaryByCompanyId(Long companyId) {
+        return employeeRepository.findJobAndAvgSalaryByCompany_Id(companyId);
     }
 
     private Company save(Company company) {

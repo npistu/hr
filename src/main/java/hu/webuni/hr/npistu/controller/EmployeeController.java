@@ -6,6 +6,7 @@ import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,11 @@ public class EmployeeController {
     @GetMapping
     public List<EmployeeDto> findAll() {
         return employeeMapper.employeesToDtos(employeeService.findAll());
+    }
+
+    @GetMapping("/withpage")
+    public Page<EmployeeDto> findAllWithPage(@RequestParam Optional<String> sort, @RequestParam Optional<String> orderby, @RequestParam int pagenumber, @RequestParam int pagesize) {
+        return employeeMapper.pageEmployeesToPageDtos(employeeService.findAllWithPage(sort, orderby, pagenumber, pagesize));
     }
 
     @GetMapping("/{id}")
