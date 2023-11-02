@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {PositionMapper.class})
 public interface EmployeeMapper {
     EmployeeDto employeeToDto(Employee employee);
 
