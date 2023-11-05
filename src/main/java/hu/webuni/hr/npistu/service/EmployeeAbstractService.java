@@ -2,21 +2,22 @@ package hu.webuni.hr.npistu.service;
 
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.repository.EmployeeRepository;
+import hu.webuni.hr.npistu.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class EmployeeAbstractService implements EmployeeService {
 
     @Autowired
     EmployeeRepository employeeRepository;
+
+    @Autowired
+    PositionRepository positionRepository;
 
     @Transactional
     public Employee create(Employee employee) {
@@ -62,6 +63,10 @@ public abstract class EmployeeAbstractService implements EmployeeService {
     }
 
     private Employee save(Employee employee) {
+        if (employee.getPosition().getId() == null) {
+            employee.setPosition(positionRepository.saveAndFlush(employee.getPosition()));
+        }
+
         return employeeRepository.save(employee);
     }
 }

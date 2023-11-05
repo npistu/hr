@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +61,8 @@ public class CompanyService {
     public Company addEmployee(long companyId, Employee employee) {
         Company company = getCompanyIfExists(companyId);
 
-        getStoredEmployee(employee, company);
+        company.addEmployee(employee);
+        employeeService.create(employee);
 
         return company;
     }
@@ -71,33 +71,25 @@ public class CompanyService {
     public Company replaceEmployees(long companyId, List<Employee> employees) {
         Company company = getCompanyIfExists(companyId);
 
-        List<Employee> actualEmployees = company.getEmployees();
+        company.getEmployees().forEach(employee -> employee.setCompany(null));
+        company.getEmployees().clear();
 
-        if (actualEmployees != null) {
-            for (Employee employee: actualEmployees) {
-                employee.setCompany(null);
-                employeeService.update(employee);
-            }
-        }
+        employees.forEach(employee -> {
+            company.addEmployee(employee);
+            employeeService.create(employee);
+        });
 
-        List<Employee> storeEmployees = new ArrayList<>();
-
-        if (employees != null) {
-            for (Employee employee: employees) {
-                storeEmployees.add(getStoredEmployee(employee, company));
-            }
-        }
-
-        company.setEmployees(storeEmployees);
-
-        return save(company);
+        return company;
     }
 
     @Transactional
     public Company deleteEmployee(long companyId, long employeeId ) {
         Company company = getCompanyIfExists(companyId);
 
-        employeeService.delete(employeeId);
+        Employee employee = employeeService.findById(employeeId);
+        employee.setCompany(null);
+        company.getEmployees().remove(employee);
+        employeeService.update(employee);
 
         return company;
     }
