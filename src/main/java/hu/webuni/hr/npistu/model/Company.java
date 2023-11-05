@@ -1,10 +1,7 @@
 package hu.webuni.hr.npistu.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -20,19 +17,24 @@ public class Company {
     private String registrationNumber;
     private String name;
 
-//    @Enumerated(EnumType.STRING)
-//    private CompanyForm form;
-    private String form;
+    @ManyToOne
+    @ToString.Exclude
+    private Form form;
 
     private String address;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private List<Employee> employees;
 
-    public Company(String registrationNumber, String name, String address, String form) {
+    public Company(String registrationNumber, String name, String address, Form form) {
         this.registrationNumber = registrationNumber;
         this.name = name;
         this.address = address;
         this.form = form;
+    }
+
+    public void addEmployee(Employee employee) {
+        employee.setCompany(this);
+        getEmployees().add(employee);
     }
 }

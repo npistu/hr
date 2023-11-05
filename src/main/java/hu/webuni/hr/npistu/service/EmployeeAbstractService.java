@@ -25,7 +25,7 @@ public abstract class EmployeeAbstractService implements EmployeeService {
 
     @Transactional
     public Employee update(Employee employee) {
-        if (findById(employee.getId()) == null) {
+        if (!employeeRepository.existsById(employee.getId())) {
             return null;
         }
 
@@ -36,20 +36,8 @@ public abstract class EmployeeAbstractService implements EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public Page<Employee> findAllWithPage(Optional<String> sort, Optional<String> orderby, int pagenumber, int pagesize) {
-        Sort orders = Sort.unsorted();
-
-        if (sort.isPresent()) {
-            orders = Sort.by(sort.get());
-
-            if (orderby.isPresent() && orderby.get().equals("desc")) {
-                orders = orders.descending();
-            }
-        }
-
-        Pageable sortedByName = PageRequest.of(pagenumber, pagesize, orders);
-
-        return employeeRepository.findAll(sortedByName);
+    public Page<Employee> findAllWithPage(Pageable pageable) {
+        return employeeRepository.findAll(pageable);
     }
 
     public Employee findById(long id) {

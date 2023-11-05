@@ -2,8 +2,10 @@ package hu.webuni.hr.npistu.service;
 
 import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
+import hu.webuni.hr.npistu.model.Form;
 import hu.webuni.hr.npistu.repository.CompanyRepository;
 import hu.webuni.hr.npistu.repository.EmployeeRepository;
+import hu.webuni.hr.npistu.repository.FormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyService {
@@ -25,6 +28,9 @@ public class CompanyService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+    @Autowired
+    FormRepository formRepository;
+
     @Transactional
     public Company create(Company company) {
         return save(company);
@@ -32,7 +38,7 @@ public class CompanyService {
 
     @Transactional
     public Company update(Company company) {
-        if (findById(company.getId()) == null) {
+        if (!companyRepository.existsById(company.getId())) {
             return null;
         }
 
@@ -101,11 +107,7 @@ public class CompanyService {
     }
 
     public List<Company> getByEmployeesSizeIsGreaterThan(Integer size) {
-        List<Company> companies = companyRepository.findAll();
-
-        companies.removeIf(company -> company.getEmployees().size() <= size);
-
-        return companies;
+        return companyRepository.findByEmployees_sizeIsGreaterThan(size);
     }
 
     public List<Object[]> getJobAndAvgSalaryByCompanyId(Long companyId) {
@@ -113,7 +115,16 @@ public class CompanyService {
     }
 
     private Company save(Company company) {
-        return companyRepository.save(company);
+        Optional<Form> optional = formRepository.findByNameEqualsIgnoreCase(company.getForm().getName());
+
+        if (optional.isPresent()) {
+            company.setForm(optional.get());
+        }
+        else {
+            company.setForm(formRepository.saveAndFlush(company.getForm()));
+        }
+
+        return companyRepository.saveAndFlush(company);
     }
 
     private Company getCompanyIfExists(long companyId) {

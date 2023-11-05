@@ -22,7 +22,7 @@ public class EmployeeControllerITTest {
 
     @Test
     void testValidCreated() {
-        EmployeeDto newEmployee = new EmployeeDto(null, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto newEmployee = new EmployeeDto(null, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12), null);
 
         List<EmployeeDto> employeesBefore = getAllEmployees();
 
@@ -38,29 +38,29 @@ public class EmployeeControllerITTest {
 
     @Test
     void testInvalidCreated() {
-        EmployeeDto newEmployee = new EmployeeDto(-101L, "", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto newEmployee = new EmployeeDto(-101L, "", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12), null);
 
         webTestClient.post().uri(API_EMPLOYEES).bodyValue(newEmployee).exchange().expectStatus().isBadRequest();
     }
 
 //    @Test
     void testValidUpdate() {
-        EmployeeDto updatedEmployee = new EmployeeDto(103L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
+        EmployeeDto updatedEmployee = new EmployeeDto(103L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12), null);
 
         testUpdateEmployee(updatedEmployee);
     }
 
     @Test
     void testInvalidUpdate() {
-        EmployeeDto updatedEmployee = new EmployeeDto(106L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12));
+        EmployeeDto updatedEmployee = new EmployeeDto(106L, "Béla", "Fejlesztő", 350000, LocalDateTime.of(2023, 1, 1, 12, 12, 12), null);
 
         webTestClient.put().uri(API_EMPLOYEES+"/{id}", updatedEmployee.id()).bodyValue(updatedEmployee).exchange().expectStatus().isNotFound();
     }
 
     private void testUpdateEmployee(EmployeeDto updateEmployee) {
 
-        EmployeeDto employee1 = new EmployeeDto(103L, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
-        EmployeeDto employee2 = new EmployeeDto(104L, "János", "Vezető", 400000, LocalDateTime.of(2020, 1, 1, 12, 12, 12));
+        EmployeeDto employee1 = new EmployeeDto(103L, "István", "Fejlesztő", 300000, LocalDateTime.of(2020, 1, 1, 12, 12, 12), null);
+        EmployeeDto employee2 = new EmployeeDto(104L, "János", "Vezető", 400000, LocalDateTime.of(2020, 1, 1, 12, 12, 12), null);
 
         createEmployee(employee1);
         createEmployee(employee2);

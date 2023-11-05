@@ -7,6 +7,8 @@ import hu.webuni.hr.npistu.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -42,12 +43,12 @@ public class EmployeeController {
 
     @GetMapping
     public List<EmployeeDto> findAll() {
-        return employeeMapper.employeesToDtos(employeeService.findAll());
+        return employeeMapper.entitiesToDtos(employeeService.findAll());
     }
 
     @GetMapping("/withpage")
-    public Page<EmployeeDto> findAllWithPage(@RequestParam Optional<String> sort, @RequestParam Optional<String> orderby, @RequestParam int pagenumber, @RequestParam int pagesize) {
-        return employeeMapper.pageEmployeesToPageDtos(employeeService.findAllWithPage(sort, orderby, pagenumber, pagesize));
+    public Page<EmployeeDto> findAllWithPage(@PageableDefault(size = 5) Pageable pageable) {
+        return employeeMapper.pageEmployeesToPageDtos(employeeService.findAllWithPage(pageable));
     }
 
     @GetMapping("/{id}")
@@ -58,33 +59,33 @@ public class EmployeeController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        return employeeMapper.employeeToDto(employee);
+        return employeeMapper.entityToDto(employee);
     }
 
     @PostMapping
     public EmployeeDto create(@RequestBody @Valid EmployeeDto employeeDto) {
-        Employee employee = employeeMapper.dtoToEmployee(employeeDto);
+        Employee employee = employeeMapper.dtoToEntity(employeeDto);
         Employee saveEmployee = employeeService.create(employee);
 
         if (saveEmployee == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        return employeeMapper.employeeToDto(saveEmployee);
+        return employeeMapper.entityToDto(saveEmployee);
     }
 
     @PutMapping("/{id}")
     public EmployeeDto update(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
         employeeDto = employeeDto.withId(id);
 
-        Employee employee = employeeMapper.dtoToEmployee(employeeDto);
+        Employee employee = employeeMapper.dtoToEntity(employeeDto);
         Employee updateEmployee = employeeService.update(employee);
 
         if (updateEmployee == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        return employeeMapper.employeeToDto(updateEmployee);
+        return employeeMapper.entityToDto(updateEmployee);
     }
 
     @DeleteMapping("/{id}")

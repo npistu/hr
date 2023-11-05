@@ -2,6 +2,7 @@ package hu.webuni.hr.npistu.service;
 
 import hu.webuni.hr.npistu.model.Employee;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,7 @@ public interface EmployeeService {
 
     public List<Employee> findAll();
 
-    public Page<Employee> findAllWithPage(Optional<String> sort, Optional<String> orderby, int pagenumber, int pagesize);
+    public Page<Employee> findAllWithPage(Pageable pageable);
 
     public Employee findById(long id);
 

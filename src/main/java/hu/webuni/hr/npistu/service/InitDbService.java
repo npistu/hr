@@ -1,11 +1,12 @@
 package hu.webuni.hr.npistu.service;
 
 import hu.webuni.hr.npistu.model.Company;
-import hu.webuni.hr.npistu.model.CompanyForm;
 import hu.webuni.hr.npistu.model.Employee;
+import hu.webuni.hr.npistu.model.Form;
 import hu.webuni.hr.npistu.model.Position;
 import hu.webuni.hr.npistu.repository.CompanyRepository;
 import hu.webuni.hr.npistu.repository.EmployeeRepository;
+import hu.webuni.hr.npistu.repository.FormRepository;
 import hu.webuni.hr.npistu.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,21 +27,26 @@ public class InitDbService {
     @Autowired
     PositionRepository positionRepository;
 
+    @Autowired
+    FormRepository formRepository;
+
     public void clearDB() {
         employeeRepository.deleteAll();
         companyRepository.deleteAll();
         positionRepository.deleteAll();
+        formRepository.deleteAll();
     }
 
     public void insertTestData() {
-        /* Beszúrás Enum-mal */
-//        Company company1 = new Company("reg001", "company 01", "address 01", CompanyForm.CORPORATION);
-//        company1 = companyRepository.saveAndFlush(company1);
-//        Company company2 = new Company("reg002", "company 02", "address 02", CompanyForm.LLC);
-//        company2 = companyRepository.saveAndFlush(company2);
-        Company company1 = new Company("reg001", "company 01", "address 01", "Corporation");
+        Form form1 = new Form("Corporation");
+        form1 = formRepository.saveAndFlush(form1);
+        Form form2 = new Form("LLC");
+        form2 = formRepository.saveAndFlush(form2);
+
+
+        Company company1 = new Company("reg001", "company 01", "address 01", form1);
         company1 = companyRepository.saveAndFlush(company1);
-        Company company2 = new Company("reg002", "company 02", "address 02", "LLC");
+        Company company2 = new Company("reg002", "company 02", "address 02", form2);
         company2 = companyRepository.saveAndFlush(company2);
 
         Position position1 = new Position("Position01", "none", 1000);
