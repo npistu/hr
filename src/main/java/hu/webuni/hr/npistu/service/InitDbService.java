@@ -66,7 +66,7 @@ public class InitDbService {
         employees.add(new Employee("Employee03", "Job3",2000, LocalDateTime.of(2022, 1, 1, 1, 1, 1), company2, position1));
         employees.add(new Employee("Employee04", "Job1",3000, LocalDateTime.of(2019, 1, 1, 1, 1, 1), company2, position2));
         employees.add(new Employee("Employee05", "Job3",4000, LocalDateTime.of(2016, 1, 1, 1, 1, 1), company2, position1));
-        employees.add(new Employee("Employee06", "Job2",6000, LocalDateTime.of(2012, 1, 1, 1, 1, 1), company2, position5));
+        employees.add(new Employee("Employee06", "Job2",5500, LocalDateTime.of(2012, 1, 1, 1, 1, 1), company2, position5));
         employees.add(new Employee("Employee07", "Job1",5000, LocalDateTime.of(2021, 1, 1, 1, 1, 1), company2, position4));
         employees.add(new Employee("Employee08", "Job5",7000, LocalDateTime.of(2013, 1, 1, 1, 1, 1), company2, position5));
 
