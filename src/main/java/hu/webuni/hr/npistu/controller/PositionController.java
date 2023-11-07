@@ -14,8 +14,8 @@ public class PositionController {
     @Autowired
     private PositionService positionService;
 
-    @PutMapping("/{name}/{minSalary}")
-    public void delete(@PathVariable String name, @PathVariable Integer minSalary) {
-        positionService.setNewMinSalary(name, minSalary);
+    @PutMapping("/{name}/{minSalary}/{companyId}")
+    public void delete(@PathVariable String name, @PathVariable Integer minSalary, @PathVariable Long companyId) {
+        positionService.setNewMinSalaryByCompany(name, minSalary, companyId);
     }
 }

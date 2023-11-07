@@ -6,8 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,10 +18,14 @@ public class Position {
     private String name;
     private String minNeededQualification;
     private Integer minSalary;
+    @ManyToOne
+    @ToString.Exclude
+    private Company company;
 
-    public Position(String name, String minNeededQualification, Integer minSalary) {
+    public Position(String name, String minNeededQualification, Integer minSalary, Company company) {
         this.name = name;
         this.minNeededQualification = minNeededQualification;
         this.minSalary = minSalary;
+        this.company = company;
     }
 }

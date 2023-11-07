@@ -1,5 +1,6 @@
 package hu.webuni.hr.npistu.repository;
 
+import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Modifying
     @Query(value = "update Employee emp set emp.salary = :salary where emp.position = :position and emp.salary < :salary")
     void updateByPositionAndSalaryLessThan(Position position, Integer salary);
+
+    @Modifying
+    @Query(value = "update Employee emp set emp.salary = :salary where emp.position = :position and emp.company = :company and emp.salary < :salary")
+    void updateByPositionAAndCompanyAndSalaryLessThan(Position position, Integer salary, Company company);
 }
