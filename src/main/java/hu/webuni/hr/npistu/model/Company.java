@@ -9,6 +9,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedEntityGraph(
+        name = "withEmployees",
+        attributeNodes = {
+                @NamedAttributeNode("employees")
+        }
+)
 @Entity
 public class Company {
     @Id

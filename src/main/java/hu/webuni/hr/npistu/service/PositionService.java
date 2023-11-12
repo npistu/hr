@@ -49,6 +49,6 @@ public class PositionService {
         position.setMinSalary(minSalary);
         position = positionRepository.saveAndFlush(position);
 
-        employeeRepository.updateByPositionAAndCompanyAndSalaryLessThan(position, minSalary, company);
+        employeeRepository.updateByPositionAndCompanyAndSalaryLessThan(position, minSalary, company);
     }
 }

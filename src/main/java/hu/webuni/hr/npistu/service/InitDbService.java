@@ -38,27 +38,17 @@ public class InitDbService {
     }
 
     public void insertTestData() {
-        Form form1 = new Form("Corporation");
-        form1 = formRepository.saveAndFlush(form1);
-        Form form2 = new Form("LLC");
-        form2 = formRepository.saveAndFlush(form2);
+        Form form1 = formRepository.saveAndFlush(new Form("Corporation"));
+        Form form2 = formRepository.saveAndFlush( new Form("LLC"));
 
+        Company company1 = companyRepository.saveAndFlush(new Company("reg001", "company 01", "address 01", form1));
+        Company company2 = companyRepository.saveAndFlush(new Company("reg002", "company 02", "address 02", form2));
 
-        Company company1 = new Company("reg001", "company 01", "address 01", form1);
-        company1 = companyRepository.saveAndFlush(company1);
-        Company company2 = new Company("reg002", "company 02", "address 02", form2);
-        company2 = companyRepository.saveAndFlush(company2);
-
-        Position position1 = new Position("Position01", "none", 1000, company1);
-        position1 = positionRepository.saveAndFlush(position1);
-        Position position2 = new Position("Position02", "college", 2000, company1);
-        position2 = positionRepository.saveAndFlush(position2);
-        Position position3 = new Position("Position01", "college", 3000, company2);
-        position3 = positionRepository.saveAndFlush(position3);
-        Position position4 = new Position("Position03", "university", 4000, company2);
-        position4 = positionRepository.saveAndFlush(position4);
-        Position position5 = new Position("Position02", "PhD", 5000, company2);
-        position5 = positionRepository.saveAndFlush(position5);
+        Position position1 = positionRepository.saveAndFlush(new Position("Position01", "none", 1000, company1));
+        Position position2 = positionRepository.saveAndFlush(new Position("Position02", "college", 2000, company1));
+        Position position3 = positionRepository.saveAndFlush(new Position("Position01", "college", 3000, company2));
+        Position position4 = positionRepository.saveAndFlush(new Position("Position03", "university", 4000, company2));
+        Position position5 = positionRepository.saveAndFlush(new Position("Position02", "PhD", 5000, company2));
 
         List<Employee> employees = new ArrayList<>();
         employees.add(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));

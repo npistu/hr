@@ -3,7 +3,10 @@ package hu.webuni.hr.npistu.mapper;
 import hu.webuni.hr.npistu.dto.AvgSalaryDto;
 import hu.webuni.hr.npistu.dto.CompanyDto;
 import hu.webuni.hr.npistu.model.Company;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,4 +26,11 @@ public interface CompanyMapper extends EntityMapper<CompanyDto, Company> {
 
         return result;
     }
+
+    @Mapping(target = "employees", ignore = true)
+    @Named("summary")
+    public CompanyDto companyToSummaryDto(Company company);
+
+    @IterableMapping(qualifiedByName = "summary")
+    public List<CompanyDto> companiesToSummaryDtos(List<Company> companies);
 }

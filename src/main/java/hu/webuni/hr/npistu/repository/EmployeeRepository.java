@@ -29,5 +29,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Modifying
     @Query(value = "update Employee emp set emp.salary = :salary where emp.position = :position and emp.company = :company and emp.salary < :salary")
-    void updateByPositionAAndCompanyAndSalaryLessThan(Position position, Integer salary, Company company);
+    void updateByPositionAndCompanyAndSalaryLessThan(Position position, Integer salary, Company company);
 }

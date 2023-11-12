@@ -48,8 +48,8 @@ public class CompanyService {
         return companyRepository.findAll();
     }
 
-    public Company findById(long id) {
-        return companyRepository.findById(id).orElse(null);
+    public Optional<Company> findById(long id) {
+        return companyRepository.findById(id);
     }
 
     @Transactional
@@ -119,28 +119,7 @@ public class CompanyService {
         return companyRepository.saveAndFlush(company);
     }
 
-    private Company getCompanyIfExists(long companyId) {
-        Company company = findById(companyId);
-
-        if (company == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return company;
+    public Company getCompanyIfExists(long companyId) {
+        return findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
-
-    private Employee getStoredEmployee(Employee employee, Company company) {
-        Employee storedEmployee = null;
-
-        if (employee.getId() != null) {
-            storedEmployee = employeeService.findById(employee.getId());
-        }
-
-        if (storedEmployee == null) {
-            employee.setCompany(company);
-            storedEmployee = employeeService.create(employee);
-        }
-
-        return storedEmployee;
-    }
-
 }
