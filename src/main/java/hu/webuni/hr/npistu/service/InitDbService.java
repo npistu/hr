@@ -31,18 +31,18 @@ public class InitDbService {
     FormRepository formRepository;
 
     public void clearDB() {
-        employeeRepository.deleteAll();
-        companyRepository.deleteAll();
-        positionRepository.deleteAll();
-        formRepository.deleteAll();
+        employeeRepository.deleteAllInBatch();
+        positionRepository.deleteAllInBatch();
+        companyRepository.deleteAllInBatch();
+        formRepository.deleteAllInBatch();
     }
 
     public void insertTestData() {
         Form form1 = formRepository.saveAndFlush(new Form("Corporation"));
         Form form2 = formRepository.saveAndFlush( new Form("LLC"));
 
-        Company company1 = companyRepository.saveAndFlush(new Company("reg001", "company 01", "address 01", form1));
-        Company company2 = companyRepository.saveAndFlush(new Company("reg002", "company 02", "address 02", form2));
+        Company company1 = companyRepository.saveAndFlush(new Company("re01", "comp01", "address 01", form1));
+        Company company2 = companyRepository.saveAndFlush(new Company("reg002", "ompany 02", "address 02", form2));
 
         Position position1 = positionRepository.saveAndFlush(new Position("Position01", "none", 1000, company1));
         Position position2 = positionRepository.saveAndFlush(new Position("Position02", "college", 2000, company1));

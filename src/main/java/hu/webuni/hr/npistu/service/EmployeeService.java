@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
     int getPayRaisePercent(Employee employee);
@@ -28,4 +27,6 @@ public interface EmployeeService {
     public List<Employee> findByNameStartingWithIgnoreCase(String name);
 
     public List<Employee> findByStartedBetween(LocalDateTime started, LocalDateTime end);
+
+    public List<Employee> findEmployeesBySpecification(Employee employee);
 }

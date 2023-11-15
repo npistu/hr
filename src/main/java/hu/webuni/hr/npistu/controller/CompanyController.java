@@ -5,7 +5,6 @@ import hu.webuni.hr.npistu.dto.CompanyDto;
 import hu.webuni.hr.npistu.dto.EmployeeDto;
 import hu.webuni.hr.npistu.mapper.CompanyMapper;
 import hu.webuni.hr.npistu.mapper.EmployeeMapper;
-import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.repository.CompanyRepository;
 import hu.webuni.hr.npistu.service.CompanyService;
 import jakarta.validation.Valid;
@@ -42,51 +41,24 @@ public class CompanyController {
         }
     }
 
-//    @GetMapping(params = "full=true")
-//    public List<CompanyDto> findAllWithEmployees() {
-//        return companyMapper.entitiesToDtos(companyService.findAll());
-//    }
-//
-//    @GetMapping()
-//    @JsonView(Views.BaseData.class)
-//    public List<CompanyDto> findAllWithoutEmployees() {
-//        return companyMapper.entitiesToDtos(companyService.findAll());
-//    }
-
     @GetMapping("/{id}")
     public CompanyDto getById(@PathVariable long id, @RequestParam Optional<Boolean> full) {
         if(full.orElse(false)) {
             return companyMapper.entityToDto(companyRepository.findByIdWithEmployees(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
         } else {
 
-            return companyMapper.companyToSummaryDto(companyService.getCompanyIfExists(id));
+            return companyMapper.companyToSummaryDto(companyService.findById(id));
         }
     }
 
     @PostMapping
     public CompanyDto create(@RequestBody @Valid CompanyDto companyDto) {
-        Company company = companyMapper.dtoToEntity(companyDto);
-        Company savedCompany = companyService.create(company);
-
-        if (savedCompany == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        return companyMapper.entityToDto(savedCompany);
+        return companyMapper.entityToDto(companyService.create(companyMapper.dtoToEntity(companyDto)));
     }
 
     @PutMapping("/{id}")
     public CompanyDto update(@PathVariable long id, @RequestBody @Valid CompanyDto companyDto) {
-        companyDto = companyDto.withId(id);
-
-        Company company = companyMapper.dtoToEntity(companyDto);
-        Company updateCompany = companyService.update(company);
-
-        if (updateCompany == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return companyMapper.entityToDto(updateCompany);
+        return companyMapper.entityToDto(companyService.update(companyMapper.dtoToEntity(companyDto.withId(id))));
     }
 
     @DeleteMapping("/{id}")

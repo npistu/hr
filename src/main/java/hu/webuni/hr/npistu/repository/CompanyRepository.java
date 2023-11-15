@@ -18,10 +18,10 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 //    @Query(value = "Select distinct c from Company c left join fetch c.employees")
     @Query(value = "SELECT c from Company c")
 //    @EntityGraph(attributePaths = {"employees"})
-    @EntityGraph("withEmployees")
+    @EntityGraph(attributePaths = {"employees", "form", "employees.position"})
     List<Company> findAllWithEmployees();
 
     @Query(value = "select c from Company c where c.id = :id")
-    @EntityGraph("withEmployees")
+    @EntityGraph(attributePaths = {"employees", "form", "employees.position"})
     Optional<Company> findByIdWithEmployees(Long id);
 }

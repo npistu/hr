@@ -37,9 +37,7 @@ public class CompanyService {
 
     @Transactional
     public Company update(Company company) {
-        if (!companyRepository.existsById(company.getId())) {
-            return null;
-        }
+        findById(company.getId());
 
         return save(company);
     }
@@ -48,8 +46,8 @@ public class CompanyService {
         return companyRepository.findAll();
     }
 
-    public Optional<Company> findById(long id) {
-        return companyRepository.findById(id);
+    public Company findById(long id) {
+        return companyRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -59,7 +57,7 @@ public class CompanyService {
 
     @Transactional
     public Company addEmployee(long companyId, Employee employee) {
-        Company company = getCompanyIfExists(companyId);
+        Company company = findById(companyId);
 
         company.addEmployee(employee);
         employeeService.create(employee);
@@ -69,7 +67,7 @@ public class CompanyService {
 
     @Transactional
     public Company replaceEmployees(long companyId, List<Employee> employees) {
-        Company company = getCompanyIfExists(companyId);
+        Company company = findById(companyId);
 
         company.getEmployees().forEach(employee -> employee.setCompany(null));
         company.getEmployees().clear();
@@ -84,12 +82,11 @@ public class CompanyService {
 
     @Transactional
     public Company deleteEmployee(long companyId, long employeeId ) {
-        Company company = getCompanyIfExists(companyId);
+        Company company = findById(companyId);
 
         Employee employee = employeeService.findById(employeeId);
         employee.setCompany(null);
         company.getEmployees().remove(employee);
-        employeeService.update(employee);
 
         return company;
     }
@@ -117,9 +114,5 @@ public class CompanyService {
         }
 
         return companyRepository.saveAndFlush(company);
-    }
-
-    public Company getCompanyIfExists(long companyId) {
-        return findById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

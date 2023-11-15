@@ -1,11 +1,12 @@
 package hu.webuni.hr.npistu.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.util.Objects;
 public class Employee {
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
     private String name;
     private String job;
     private Integer salary;

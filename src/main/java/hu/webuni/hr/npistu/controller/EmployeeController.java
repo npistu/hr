@@ -10,10 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,39 +51,22 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public EmployeeDto findById(@PathVariable long id) {
-        Employee employee = employeeService.findById(id);
+        return employeeMapper.entityToDto(employeeService.findById(id));
+    }
 
-        if (employee == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return employeeMapper.entityToDto(employee);
+    @GetMapping("/searchbyspecification")
+    public List<EmployeeDto> findEmployeesBySpecification(@RequestBody EmployeeDto employeeDto) {
+        return employeeMapper.entitiesToDtos(employeeService.findEmployeesBySpecification(employeeMapper.dtoToEntity(employeeDto)));
     }
 
     @PostMapping
     public EmployeeDto create(@RequestBody @Valid EmployeeDto employeeDto) {
-        Employee employee = employeeMapper.dtoToEntity(employeeDto);
-        Employee saveEmployee = employeeService.create(employee);
-
-        if (saveEmployee == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        return employeeMapper.entityToDto(saveEmployee);
+        return employeeMapper.entityToDto(employeeService.create(employeeMapper.dtoToEntity(employeeDto)));
     }
 
     @PutMapping("/{id}")
     public EmployeeDto update(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
-        employeeDto = employeeDto.withId(id);
-
-        Employee employee = employeeMapper.dtoToEntity(employeeDto);
-        Employee updateEmployee = employeeService.update(employee);
-
-        if (updateEmployee == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return employeeMapper.entityToDto(updateEmployee);
+        return employeeMapper.entityToDto(employeeService.update(employeeMapper.dtoToEntity(employeeDto.withId(id))));
     }
 
     @DeleteMapping("/{id}")

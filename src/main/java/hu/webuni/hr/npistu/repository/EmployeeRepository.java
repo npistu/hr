@@ -4,13 +4,14 @@ import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.model.Position;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
     List<Employee> findByJob(String job);
 

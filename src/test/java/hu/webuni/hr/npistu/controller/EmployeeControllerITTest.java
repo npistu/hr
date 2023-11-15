@@ -30,7 +30,7 @@ public class EmployeeControllerITTest {
 
         List<EmployeeDto> employeesAfter = getAllEmployees();
 
-        assertThat(employeesAfter.subList(0, employeesBefore.size())).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+        assertThat(employeesAfter.subList(0, employeesBefore.size())).usingElementComparatorIgnoringFields("id")
                 .containsExactlyElementsOf(employeesBefore);
 //        assertThat(employeesAfter.get(employeesAfter.size() - 1)).usingRecursiveComparison()
 //                .isEqualTo(newEmployee);
@@ -71,7 +71,7 @@ public class EmployeeControllerITTest {
 
         List<EmployeeDto> employeesAfter = getAllEmployees();
 
-        assertThat(employeesAfter.get(0)).usingRecursiveComparison()
+        assertThat(employeesAfter.get(0)).usingDefaultComparator()
                 .isNotEqualTo(employee1);
         assertThat(employeesAfter).usingRecursiveFieldByFieldElementComparator()
                 .isNotEqualTo(employeesBefore);

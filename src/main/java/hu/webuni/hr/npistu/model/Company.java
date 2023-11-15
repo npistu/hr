@@ -3,18 +3,27 @@ package hu.webuni.hr.npistu.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@NamedEntityGraph(
-        name = "withEmployees",
-        attributeNodes = {
-                @NamedAttributeNode("employees")
-        }
-)
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = "withEmployees",
+                attributeNodes = {
+                        @NamedAttributeNode("employees")
+                }
+        ),
+        @NamedEntityGraph(
+                name = "withForm",
+                attributeNodes = {
+                        @NamedAttributeNode("form")
+                }
+        )
+})
 @Entity
 public class Company {
     @Id
@@ -42,5 +51,11 @@ public class Company {
     public void addEmployee(Employee employee) {
         employee.setCompany(this);
         getEmployees().add(employee);
+    }
+
+    public List<Employee> getEmployees() {
+        if(this.employees == null)
+            this.employees = new ArrayList<>();
+        return this.employees;
     }
 }
