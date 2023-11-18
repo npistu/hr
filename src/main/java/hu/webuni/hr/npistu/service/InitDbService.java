@@ -1,16 +1,12 @@
 package hu.webuni.hr.npistu.service;
 
-import hu.webuni.hr.npistu.model.Company;
-import hu.webuni.hr.npistu.model.Employee;
-import hu.webuni.hr.npistu.model.Form;
-import hu.webuni.hr.npistu.model.Position;
-import hu.webuni.hr.npistu.repository.CompanyRepository;
-import hu.webuni.hr.npistu.repository.EmployeeRepository;
-import hu.webuni.hr.npistu.repository.FormRepository;
-import hu.webuni.hr.npistu.repository.PositionRepository;
+import hu.webuni.hr.npistu.enums.TimeoffStatus;
+import hu.webuni.hr.npistu.model.*;
+import hu.webuni.hr.npistu.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +26,15 @@ public class InitDbService {
     @Autowired
     FormRepository formRepository;
 
+    @Autowired
+    TimeoffRepository timeoffRepository;
+
     public void clearDB() {
         employeeRepository.deleteAllInBatch();
         positionRepository.deleteAllInBatch();
         companyRepository.deleteAllInBatch();
         formRepository.deleteAllInBatch();
+        timeoffRepository.deleteAllInBatch();
     }
 
     public void insertTestData() {
@@ -51,15 +51,21 @@ public class InitDbService {
         Position position5 = positionRepository.saveAndFlush(new Position("Position02", "PhD", 5000, company2));
 
         List<Employee> employees = new ArrayList<>();
-        employees.add(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
-        employees.add(new Employee("Employee02", "Job2",2000, LocalDateTime.of(2023, 1, 1, 1, 1, 1), company1, position2));
-        employees.add(new Employee("Employee03", "Job3",2000, LocalDateTime.of(2022, 1, 1, 1, 1, 1), company2, position5));
-        employees.add(new Employee("Employee04", "Job1",3000, LocalDateTime.of(2019, 1, 1, 1, 1, 1), company2, position3));
-        employees.add(new Employee("Employee05", "Job3",4000, LocalDateTime.of(2016, 1, 1, 1, 1, 1), company2, position3));
-        employees.add(new Employee("Employee06", "Job2",5500, LocalDateTime.of(2012, 1, 1, 1, 1, 1), company2, position5));
-        employees.add(new Employee("Employee07", "Job1",5000, LocalDateTime.of(2021, 1, 1, 1, 1, 1), company2, position4));
-        employees.add(new Employee("Employee08", "Job5",7000, LocalDateTime.of(2013, 1, 1, 1, 1, 1), company2, position5));
+        Employee employee1 = new Employee("abEmployee01", "Job1", 1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1);
+        employees.add(employee1);
+        Employee employee2 = new Employee("abEmployee02", "Job2", 2000, LocalDateTime.of(2023, 1, 1, 1, 1, 1), company1, position2);
+        employees.add(employee2);
+        employees.add(new Employee("abEmployee03", "Job3",2000, LocalDateTime.of(2022, 1, 1, 1, 1, 1), company2, position5));
+        employees.add(new Employee("cdEmployee04", "Job1",3000, LocalDateTime.of(2019, 1, 1, 1, 1, 1), company2, position3));
+        employees.add(new Employee("cdEmployee05", "Job3",4000, LocalDateTime.of(2016, 1, 1, 1, 1, 1), company2, position3));
+        employees.add(new Employee("efEmployee06", "Job2",5500, LocalDateTime.of(2012, 1, 1, 1, 1, 1), company2, position5));
+        employees.add(new Employee("efEmployee07", "Job1",5000, LocalDateTime.of(2021, 1, 1, 1, 1, 1), company2, position4));
+        employees.add(new Employee("ghEmployee08", "Job5",7000, LocalDateTime.of(2013, 1, 1, 1, 1, 1), company2, position5));
 
         employeeRepository.saveAll(employees);
+
+        timeoffRepository.save(new Timeoff(employee1, employee2, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 5), TimeoffStatus.requested));
+        timeoffRepository.save(new Timeoff(employee1, employee2, LocalDate.of(2024, 3, 10), LocalDate.of(2024, 3, 11), TimeoffStatus.accepted));
+        timeoffRepository.save(new Timeoff(employee1, employee2, LocalDate.of(2024, 2, 25), LocalDate.of(2024, 3, 4), TimeoffStatus.denied));
     }
 }

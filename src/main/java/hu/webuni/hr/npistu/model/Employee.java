@@ -1,12 +1,11 @@
 package hu.webuni.hr.npistu.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,6 +27,9 @@ public class Employee {
     @ToString.Exclude
     private Position position;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    private List<Timeoff> timeoffs;
+
     public Employee(String name, String job, Integer salary, LocalDateTime started, Company company, Position position) {
         this.name = name;
         this.job = job;
@@ -35,5 +37,16 @@ public class Employee {
         this.started = started;
         this.company = company;
         this.position = position;
+    }
+
+    public void addTimeoff(Timeoff timeoff) {
+        timeoff.setEmployee(this);
+        getTimeoffs().add(timeoff);
+    }
+
+    public List<Timeoff> getTimeoffs() {
+        if(this.timeoffs == null)
+            this.timeoffs = new ArrayList<>();
+        return this.timeoffs;
     }
 }
