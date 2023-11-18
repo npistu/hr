@@ -10,6 +10,7 @@ import hu.webuni.hr.npistu.service.CompanyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,6 +42,11 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/withemployees")
+    public List<CompanyDto> findAll(){
+        return companyMapper.entitiesToDtos(companyRepository.findAllWithEmployees());
+    }
+
     @GetMapping("/{id}")
     public CompanyDto getById(@PathVariable long id, @RequestParam Optional<Boolean> full) {
         if(full.orElse(false)) {
@@ -67,6 +73,7 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}/addemployee")
+    @Transactional
     public CompanyDto addEmployee(@PathVariable long id, @RequestBody @Valid EmployeeDto employeeDto) {
         return companyMapper.entityToDto(companyService.addEmployee(id, employeeMapper.dtoToEntity(employeeDto)));
     }
