@@ -39,7 +39,7 @@ public class TimeoffController {
         return timeoffMapper.entityToDto(timeoffService.findById(id));
     }
 
-    @GetMapping("/searchbyspecification")
+    @PostMapping("/searchbyspecification")
     public List<TimeoffDto> findTimeoffsBySpecification(@RequestBody TimeoffSearchDto timeoffSearchDto) {
         return timeoffMapper.entitiesToDtos(timeoffService.findTimeoffsBySpecification(timeoffSearchDto));
     }

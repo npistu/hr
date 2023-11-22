@@ -30,11 +30,11 @@ public class InitDbService {
     TimeoffRepository timeoffRepository;
 
     public void clearDB() {
+        timeoffRepository.deleteAllInBatch();
         employeeRepository.deleteAllInBatch();
         positionRepository.deleteAllInBatch();
         companyRepository.deleteAllInBatch();
         formRepository.deleteAllInBatch();
-        timeoffRepository.deleteAllInBatch();
     }
 
     public void insertTestData() {

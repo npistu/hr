@@ -20,4 +20,8 @@ public record TimeoffDto(@Positive Long id,
     public TimeoffDto() {
         this(1L, null, null, null, null, null, null);
     }
+
+    public TimeoffDto(LocalDate started, LocalDate ended) {
+        this(null, null, null, started, ended, null, null);
+    }
 }
