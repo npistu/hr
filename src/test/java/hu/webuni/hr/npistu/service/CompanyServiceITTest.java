@@ -13,10 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,6 +45,9 @@ public class CompanyServiceITTest {
     @Autowired
     CompanyService companyService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void init() {
         initDbService.clearDB();
@@ -53,8 +59,8 @@ public class CompanyServiceITTest {
         Form form1 = formRepository.saveAndFlush(new Form("Corporation"));
         Company company1 = companyRepository.saveAndFlush(new Company("reg001", "company 01", "address 01", form1));
         Position position1 = positionRepository.saveAndFlush(new Position("Position01", "none", 1000, company1));
-        Employee employee1 = employeeRepository.saveAndFlush(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
-        Employee employee2 = employeeRepository.saveAndFlush(new Employee("Employee02", "Job2",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
+        Employee employee1 = employeeRepository.saveAndFlush(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee2 = employeeRepository.saveAndFlush(new Employee("Employee02", "Job2",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
 
         company1 = companyService.addEmployee(company1.getId(), employee1);
         company1 = companyService.addEmployee(company1.getId(), employee2);
@@ -70,8 +76,8 @@ public class CompanyServiceITTest {
         Form form1 = formRepository.saveAndFlush(new Form("Corporation"));
         Company company1 = companyRepository.saveAndFlush(new Company("reg001", "company 01", "address 01", form1));
         Position position1 = positionRepository.saveAndFlush(new Position("Position01", "none", 1000, company1));
-        Employee employee1 = employeeRepository.saveAndFlush(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
-        Employee employee2 = employeeRepository.saveAndFlush(new Employee("Employee02", "Job2",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
+        Employee employee1 = employeeRepository.saveAndFlush(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee2 = employeeRepository.saveAndFlush(new Employee("Employee02", "Job2",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
 
         company1 = companyService.addEmployee(company1.getId(), employee1);
         company1 = companyService.addEmployee(company1.getId(), employee2);
@@ -91,9 +97,9 @@ public class CompanyServiceITTest {
         Form form1 = formRepository.saveAndFlush(new Form("Corporation"));
         Company company1 = companyRepository.saveAndFlush(new Company("reg001", "company 01", "address 01", form1));
         Position position1 = positionRepository.saveAndFlush(new Position("Position01", "none", 1000, company1));
-        Employee employee1 = employeeRepository.saveAndFlush(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
-        Employee employee2 = employeeRepository.saveAndFlush(new Employee("Employee02", "Job2",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
-        Employee employee3 = employeeRepository.saveAndFlush(new Employee("Employee03", "Job3",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1));
+        Employee employee1 = employeeRepository.saveAndFlush(new Employee("Employee01", "Job1",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee2 = employeeRepository.saveAndFlush(new Employee("Employee02", "Job2",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee3 = employeeRepository.saveAndFlush(new Employee("Employee03", "Job3",1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp03", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
 
         company1 = companyService.addEmployee(company1.getId(), employee1);
         company1 = companyService.addEmployee(company1.getId(), employee2);

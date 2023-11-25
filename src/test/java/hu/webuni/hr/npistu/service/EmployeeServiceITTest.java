@@ -14,9 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +46,9 @@ public class EmployeeServiceITTest {
     @Autowired
     EmployeeService employeeService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void init() {
         initDbService.clearDB();
@@ -58,12 +64,12 @@ public class EmployeeServiceITTest {
 
         Position position1 = positionRepository.saveAndFlush(new Position("Pos01", "none", 1000, company1));
 
-        Employee employee1 = employeeRepository.saveAndFlush(new Employee("ABC01", "Job1",2000, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1));
-        Employee employee2 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",2040, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1));
-        Employee employee3 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3000, LocalDateTime.of(2022, 9, 1, 1, 1, 1), company2, position1));
-        Employee employee4 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",4000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company2, position1));
+        Employee employee1 = employeeRepository.saveAndFlush(new Employee("ABC01", "Job1",2000, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee2 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",2040, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee3 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3000, LocalDateTime.of(2022, 9, 1, 1, 1, 1), company2, position1, null, "emp03", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee4 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",4000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company2, position1, null, "emp04", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
 
-        Employee example = new Employee(null, null, null,  LocalDateTime.of(2022, 9, 1, 1, 1, 1), null, null);
+        Employee example = new Employee(null, null, null,  LocalDateTime.of(2022, 9, 1, 1, 1, 1), null, null, null, null, null, null, null);
 
         List<Employee> foundEmployees = employeeService.findEmployeesBySpecification(example);
 
@@ -80,12 +86,12 @@ public class EmployeeServiceITTest {
 
         Position position1 = positionRepository.saveAndFlush(new Position("Pos01", "none", 1000, company1));
 
-        Employee employee1 = employeeRepository.saveAndFlush(new Employee("ABC01", "Job1",2000, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1));
-        Employee employee2 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",2040, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1));
-        Employee employee3 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3000, LocalDateTime.of(2022, 9, 1, 1, 1, 1), company2, position1));
-        Employee employee4 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",4000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company2, position1));
+        Employee employee1 = employeeRepository.saveAndFlush(new Employee("ABC01", "Job1",2000, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee2 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",2040, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee3 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3000, LocalDateTime.of(2022, 9, 1, 1, 1, 1), company2, position1, null, "emp03", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee4 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",4000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company2, position1, null, "emp04", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
 
-        Employee example = new Employee(null, null, null,  null, new Company(null, "AB", null, null), new Position("Pos01", null, null, null));
+        Employee example = new Employee(null, null, null,  null, new Company(null, "AB", null, null), new Position("Pos01", null, null, null), null, null, null, null, null);
 
         List<Employee> foundEmployees = employeeService.findEmployeesBySpecification(example);
 
@@ -102,12 +108,12 @@ public class EmployeeServiceITTest {
 
         Position position1 = positionRepository.saveAndFlush(new Position("Pos01", "none", 1000, company1));
 
-        Employee employee1 = employeeRepository.saveAndFlush(new Employee("ABC01", "Job1",2000, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1));
-        Employee employee2 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",2040, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1));
-        Employee employee3 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3000, LocalDateTime.of(2022, 9, 1, 1, 1, 1), company2, position1));
-        Employee employee4 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3202, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company2, position1));
+        Employee employee1 = employeeRepository.saveAndFlush(new Employee("ABC01", "Job1",2000, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee2 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",2040, LocalDateTime.of(2023, 10, 1, 1, 1, 1), company1, position1, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee3 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3000, LocalDateTime.of(2022, 9, 1, 1, 1, 1), company2, position1, null, "emp03", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
+        Employee employee4 = employeeRepository.saveAndFlush(new Employee("DEF01", "Job2",3202, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company2, position1, null, "emp04", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null));
 
-        Employee example = new Employee(null, null, 3050,  null, new Company(null, "AD", null, null), null);
+        Employee example = new Employee(null, null, 3050,  null, new Company(null, "AD", null, null), null, null, null, null, null, null);
 
         List<Employee> foundEmployees = employeeService.findEmployeesBySpecification(example);
 
