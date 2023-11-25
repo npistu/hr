@@ -2,7 +2,9 @@ package hu.webuni.hr.npistu.service;
 
 import hu.webuni.hr.npistu.dto.TimeoffSearchDto;
 import hu.webuni.hr.npistu.enums.TimeoffStatus;
+import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.model.Timeoff;
+import hu.webuni.hr.npistu.repository.EmployeeRepository;
 import hu.webuni.hr.npistu.repository.TimeoffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +28,10 @@ public class TimeoffService {
     private TimeoffRepository timeoffRepository;
 
     @Autowired
-    private EmployeeService employeeService;
+    private SecurityService securityService;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public List<Timeoff> findAll() {
         return timeoffRepository.findAll();
@@ -41,28 +46,34 @@ public class TimeoffService {
     }
 
     @Transactional
-    public Timeoff create(Long employeeId, Timeoff timeoff) {
-        timeoff.setEmployee(employeeService.findById(employeeId));
+    public Timeoff create(Timeoff timeoff) {
+        timeoff.setEmployee(securityService.getCurrentEmployee());
         timeoff.setStatus(TimeoffStatus.requested);
 
         return timeoffRepository.saveAndFlush(timeoff);
     }
 
     @Transactional
-    public Timeoff denied(Long id, Long employeeId) {
+    public Timeoff denied(Long id) {
         Timeoff timeoff = findByIdAndStatus(id, TimeoffStatus.requested);
+        Employee currentEmployee = securityService.getCurrentEmployee();
 
-        timeoff.setApprover(employeeService.findById(employeeId));
+        checkApprover(timeoff, currentEmployee);
+
+        timeoff.setApprover(currentEmployee);
         timeoff.setStatus(TimeoffStatus.denied);
 
         return timeoff;
     }
 
     @Transactional
-    public Timeoff accepted(Long id, Long employeeId) {
+    public Timeoff accepted(Long id) {
         Timeoff timeoff = findByIdAndStatus(id, TimeoffStatus.requested);
+        Employee currentEmployee = securityService.getCurrentEmployee();
 
-        timeoff.setApprover(employeeService.findById(employeeId));
+        checkApprover(timeoff, currentEmployee);
+
+        timeoff.setApprover(currentEmployee);
         timeoff.setStatus(TimeoffStatus.accepted);
 
         return timeoff;
@@ -71,6 +82,8 @@ public class TimeoffService {
     @Transactional
     public Timeoff update(Long id, Timeoff timeoff){
         Timeoff updatedTimeoff = findByIdAndStatus(id, TimeoffStatus.requested);
+
+        checkEmployee(updatedTimeoff);
 
         updatedTimeoff.setStarted(timeoff.getStarted());
         updatedTimeoff.setEnded(timeoff.getEnded());
@@ -81,6 +94,8 @@ public class TimeoffService {
     @Transactional
     public void delete(Long id){
         Timeoff timeoff = findByIdAndStatus(id, TimeoffStatus.requested);
+
+        checkEmployee(timeoff);
 
         timeoffRepository.delete(timeoff);
     }
@@ -150,5 +165,15 @@ public class TimeoffService {
         }
 
         return timeoffRepository.findAll(specs);
+    }
+
+    private void checkEmployee(Timeoff timeoff) {
+        if (!timeoff.getEmployee().equals(securityService.getCurrentEmployee())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    private void checkApprover(Timeoff timeoff, Employee currentEmployee) {
+        employeeRepository.findByIdAndManager(timeoff.getEmployee().getId(), currentEmployee).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
     }
 }

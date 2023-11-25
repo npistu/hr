@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,13 +32,29 @@ public class Employee {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     private List<Timeoff> timeoffs;
 
-    public Employee(String name, String job, Integer salary, LocalDateTime started, Company company, Position position) {
+    @Column(unique = true)
+    private String username;
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles;
+
+    @ManyToOne
+    @ToString.Exclude
+    private Employee manager;
+
+    public Employee(String name, String job, Integer salary, LocalDateTime started, Company company, Position position, List<Timeoff> timeoffs, String username, String password, Set<String> roles, Employee manager) {
         this.name = name;
         this.job = job;
         this.salary = salary;
         this.started = started;
         this.company = company;
         this.position = position;
+        this.timeoffs = timeoffs;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.manager = manager;
     }
 
     public void addTimeoff(Timeoff timeoff) {
@@ -48,5 +66,18 @@ public class Employee {
         if(this.timeoffs == null)
             this.timeoffs = new ArrayList<>();
         return this.timeoffs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

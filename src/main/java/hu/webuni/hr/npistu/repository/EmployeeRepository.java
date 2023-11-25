@@ -10,10 +10,15 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
     List<Employee> findByJob(String job);
+
+    Optional<Employee> findByUsername(String username);
+
+    Optional<Employee> findByIdAndManager(Long id, Employee manager);
 
     List<Employee> findByNameStartingWithIgnoreCase(String name);
 

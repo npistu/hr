@@ -44,19 +44,19 @@ public class TimeoffController {
         return timeoffMapper.entitiesToDtos(timeoffService.findTimeoffsBySpecification(timeoffSearchDto));
     }
 
-    @PostMapping("/{employeeId}")
-    public TimeoffDto create(@PathVariable Long employeeId, @RequestBody @Valid TimeoffDto timeoffDto) {
-        return timeoffMapper.entityToDto(timeoffService.create(employeeId, timeoffMapper.dtoToEntity(timeoffDto)));
+    @PostMapping
+    public TimeoffDto create(@RequestBody @Valid TimeoffDto timeoffDto) {
+        return timeoffMapper.entityToDto(timeoffService.create(timeoffMapper.dtoToEntity(timeoffDto)));
     }
 
-    @PutMapping("/denied/{id}/{employeeId}")
-    public TimeoffDto denied(@PathVariable Long id, @PathVariable Long employeeId) {
-        return timeoffMapper.entityToDto(timeoffService.denied(id, employeeId));
+    @PutMapping("/denied/{id}")
+    public TimeoffDto denied(@PathVariable Long id) {
+        return timeoffMapper.entityToDto(timeoffService.denied(id));
     }
 
-    @PutMapping("/accepted/{id}/{employeeId}")
-    public TimeoffDto accepted(@PathVariable Long id, @PathVariable Long employeeId) {
-        return timeoffMapper.entityToDto(timeoffService.accepted(id, employeeId));
+    @PutMapping("/accepted/{id}")
+    public TimeoffDto accepted(@PathVariable Long id) {
+        return timeoffMapper.entityToDto(timeoffService.accepted(id));
     }
 
     @PutMapping("/{id}")

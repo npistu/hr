@@ -4,11 +4,14 @@ import hu.webuni.hr.npistu.enums.TimeoffStatus;
 import hu.webuni.hr.npistu.model.*;
 import hu.webuni.hr.npistu.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -28,6 +31,9 @@ public class InitDbService {
 
     @Autowired
     TimeoffRepository timeoffRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public void clearDB() {
         timeoffRepository.deleteAllInBatch();
@@ -51,16 +57,16 @@ public class InitDbService {
         Position position5 = positionRepository.saveAndFlush(new Position("Position02", "PhD", 5000, company2));
 
         List<Employee> employees = new ArrayList<>();
-        Employee employee1 = new Employee("abEmployee01", "Job1", 1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1);
+        Employee employee1 = new Employee("abEmployee01", "Job1", 1000, LocalDateTime.of(2020, 1, 1, 1, 1, 1), company1, position1, null, "emp01", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null);
         employees.add(employee1);
-        Employee employee2 = new Employee("abEmployee02", "Job2", 2000, LocalDateTime.of(2023, 1, 1, 1, 1, 1), company1, position2);
+        Employee employee2 = new Employee("abEmployee02", "Job2", 2000, LocalDateTime.of(2023, 1, 1, 1, 1, 1), company1, position2, null, "emp02", passwordEncoder.encode("pass"), new HashSet<>(Arrays.asList("user", "admin")), null);
         employees.add(employee2);
-        employees.add(new Employee("abEmployee03", "Job3",2000, LocalDateTime.of(2022, 1, 1, 1, 1, 1), company2, position5));
-        employees.add(new Employee("cdEmployee04", "Job1",3000, LocalDateTime.of(2019, 1, 1, 1, 1, 1), company2, position3));
-        employees.add(new Employee("cdEmployee05", "Job3",4000, LocalDateTime.of(2016, 1, 1, 1, 1, 1), company2, position3));
-        employees.add(new Employee("efEmployee06", "Job2",5500, LocalDateTime.of(2012, 1, 1, 1, 1, 1), company2, position5));
-        employees.add(new Employee("efEmployee07", "Job1",5000, LocalDateTime.of(2021, 1, 1, 1, 1, 1), company2, position4));
-        employees.add(new Employee("ghEmployee08", "Job5",7000, LocalDateTime.of(2013, 1, 1, 1, 1, 1), company2, position5));
+        employees.add(new Employee("abEmployee03", "Job3",2000, LocalDateTime.of(2022, 1, 1, 1, 1, 1), company2, position5, null, "emp03", passwordEncoder.encode("pass"), new HashSet<>(List.of("user")), employee1));
+        employees.add(new Employee("cdEmployee04", "Job1",3000, LocalDateTime.of(2019, 1, 1, 1, 1, 1), company2, position3, null, "emp04", passwordEncoder.encode("pass"), new HashSet<>(List.of("user")), employee1));
+        employees.add(new Employee("cdEmployee05", "Job3",4000, LocalDateTime.of(2016, 1, 1, 1, 1, 1), company2, position3, null, "emp05", passwordEncoder.encode("pass"), new HashSet<>(List.of("user")), employee1));
+        employees.add(new Employee("efEmployee06", "Job2",5500, LocalDateTime.of(2012, 1, 1, 1, 1, 1), company2, position5, null, "emp06", passwordEncoder.encode("pass"), new HashSet<>(List.of("user")), employee2));
+        employees.add(new Employee("efEmployee07", "Job1",5000, LocalDateTime.of(2021, 1, 1, 1, 1, 1), company2, position4, null, "emp07", passwordEncoder.encode("pass"), new HashSet<>(List.of("user")), employee2));
+        employees.add(new Employee("ghEmployee08", "Job5",7000, LocalDateTime.of(2013, 1, 1, 1, 1, 1), company2, position5, null, "emp08", passwordEncoder.encode("pass"), new HashSet<>(List.of("user")), employee2));
 
         employeeRepository.saveAll(employees);
 
