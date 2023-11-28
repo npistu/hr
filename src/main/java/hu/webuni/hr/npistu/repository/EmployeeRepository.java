@@ -20,6 +20,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 
     Optional<Employee> findByIdAndManager(Long id, Employee manager);
 
+    List<Employee> findByManager(Employee manager);
+
     List<Employee> findByNameStartingWithIgnoreCase(String name);
 
     List<Employee> findByStartedBetween(LocalDateTime started, LocalDateTime end);

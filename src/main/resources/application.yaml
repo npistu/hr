@@ -27,6 +27,10 @@ hr:
       percent: 5
     - limit: 2.5
       percent: 2
+  jwtConfig:
+    issuer: HrApp
+    secret: mysecret
+    duration: 120
 ---
 server:
   error:

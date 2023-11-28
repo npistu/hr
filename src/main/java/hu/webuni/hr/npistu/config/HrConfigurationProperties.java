@@ -8,7 +8,16 @@ import java.util.List;
 @ConfigurationProperties(prefix = "hr")
 @Component
 public class HrConfigurationProperties {
+    private JWTConfig jwtConfig;
     private List<Smart> smart;
+
+    public JWTConfig getJwtConfig() {
+        return jwtConfig;
+    }
+
+    public void setJwtConfig(JWTConfig jwtConfig) {
+        this.jwtConfig = jwtConfig;
+    }
 
     public List<Smart> getSmart() {
         return smart;
@@ -16,6 +25,36 @@ public class HrConfigurationProperties {
 
     public void setSmart(List<Smart> smart) {
         this.smart = smart;
+    }
+
+    public static class JWTConfig {
+        private String issuer;
+        private String secret;
+        private long duration;
+
+        public String getIssuer() {
+            return issuer;
+        }
+
+        public void setIssuer(String issuer) {
+            this.issuer = issuer;
+        }
+
+        public String getSecret() {
+            return secret;
+        }
+
+        public void setSecret(String secret) {
+            this.secret = secret;
+        }
+
+        public long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(long duration) {
+            this.duration = duration;
+        }
     }
 
     public static class Smart {
