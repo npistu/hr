@@ -156,11 +156,11 @@ public class TimeoffService {
             specs = specs.and(timeoffInRange(timeoffFrom, timeoffTo));
         }
 
-        if (timeoffFrom != null && timeoffTo == null) {
+        if (timeoffFrom != null) {
             specs = specs.and(timeoffGreaterThanOrEqualTo(timeoffFrom));
         }
 
-        if (timeoffFrom == null && timeoffTo != null) {
+        if (timeoffTo != null) {
             specs = specs.and(timeoffLessThanOrEqualTo(timeoffTo));
         }
 
