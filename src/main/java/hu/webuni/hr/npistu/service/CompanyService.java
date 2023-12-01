@@ -57,7 +57,7 @@ public class CompanyService {
 
     @Transactional
     public Company addEmployee(long companyId, Employee employee) {
-        Company company = findById(companyId);
+        Company company = companyRepository.findByIdWithEmployees(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         company.addEmployee(employee);
         employeeService.create(employee);
