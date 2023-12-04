@@ -29,7 +29,9 @@ hr:
       percent: 2
   jwtConfig:
     issuer: HrApp
-    secret: mysecret
+    algorithm:
+      type: HS384
+      secret: mysecret
     duration: 120
 ---
 server:

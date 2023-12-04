@@ -9,8 +9,6 @@ import hu.webuni.hr.npistu.repository.EmployeeRepository;
 import hu.webuni.hr.npistu.utils.EmployeeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +37,23 @@ public class JwtService {
                 .withClaim("managed-employees", EmployeeUtils.employeeListToMapList(employeeRepository.findByManager(employee)))
                 .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(properties.getJwtConfig().getDuration())))
                 .withIssuer(properties.getJwtConfig().getIssuer())
-                .sign(Algorithm.HMAC256(properties.getJwtConfig().getSecret()));
+                .sign(getAlgorithm());
     }
 
     public UserDetails parseJwt(String jwtToken) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(properties.getJwtConfig().getSecret()))
+        DecodedJWT decodedJWT = JWT.require(getAlgorithm())
                 .withIssuer(properties.getJwtConfig().getIssuer())
                 .build()
                 .verify(jwtToken);
 
-        return new User(decodedJWT.getSubject(), "dummy",
-                decodedJWT.getClaim("auth").asList(String.class).stream().map(SimpleGrantedAuthority::new).toList()
-        );
+        return new EmployeeUserDetails(decodedJWT.getSubject(), employeeRepository.findById(decodedJWT.getClaim("id").asLong()).get());
+    }
+
+    private Algorithm getAlgorithm() {
+        return switch (properties.getJwtConfig().getAlgorithm().getType()) {
+            case "HS384" -> Algorithm.HMAC384(properties.getJwtConfig().getAlgorithm().getSecret());
+            case "HS512" -> Algorithm.HMAC512(properties.getJwtConfig().getAlgorithm().getSecret());
+            default -> Algorithm.HMAC256(properties.getJwtConfig().getAlgorithm().getSecret());
+        };
     }
 }
