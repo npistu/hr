@@ -43,6 +43,9 @@ public class Employee {
     @ToString.Exclude
     private Employee manager;
 
+    @OneToMany(mappedBy = "manager")
+    private List<Employee> managedEmployees;
+
     public Employee(String name, String job, Integer salary, LocalDateTime started, Company company, Position position, List<Timeoff> timeoffs, String username, String password, Set<String> roles, Employee manager) {
         this.name = name;
         this.job = job;

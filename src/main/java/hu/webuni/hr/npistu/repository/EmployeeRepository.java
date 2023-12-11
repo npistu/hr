@@ -3,10 +3,7 @@ package hu.webuni.hr.npistu.repository;
 import hu.webuni.hr.npistu.model.Company;
 import hu.webuni.hr.npistu.model.Employee;
 import hu.webuni.hr.npistu.model.Position;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +13,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 
     List<Employee> findByJob(String job);
 
+    @EntityGraph(attributePaths = {"manager", "managedEmployees"})
     Optional<Employee> findByUsername(String username);
 
     Optional<Employee> findByIdAndManager(Long id, Employee manager);

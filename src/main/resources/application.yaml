@@ -30,9 +30,10 @@ hr:
   jwtConfig:
     issuer: HrApp
     algorithm:
-      type: HS384
+      method: HMAC512
       secret: mysecret
-    duration: 120
+#    duration: 120
+    duration: 10m
 ---
 server:
   error:
